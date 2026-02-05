@@ -557,13 +557,16 @@
     <!-- Course Terminal (Left - Small and Thin) -->
     <div class="course-terminal" id="courseTerminal">
         <h2>COURSES</h2>
-        <ul class="course-list">
-            <li data-topic="algorithms">Algorithms and complexity</li>
-            <li data-topic="ml">Architecture and organization</li>
-            <li data-topic="security">Java programming language</li>
-            <li data-topic="quantum">Discrete Mathematics</li>
-            <li data-topic="systems">Database management systems</li>
-        </ul>
+       <ul class="course-list">
+            <li data-topic="java">Java Programming</li>
+            <li data-topic="discrete-math">Discrete Mathematics</li>
+            <li data-topic="architecture">Architecture and Computer Organization</li>
+            <li data-topic="dbms">Database Management Systems</li>
+            <li data-topic="os">Operating Systems</li>
+            <li data-topic="digital-electronics">Digital Electronics</li>
+            <li data-topic="algorithms">Algorithms and Complexity</li>
+            <li data-topic="data-comm">Data Communication</li>
+</ul>
     </div>
 
     <!-- Details Terminal (Right - Big with Photo) -->
@@ -682,7 +685,7 @@
                 {text: "> Welcome to the singularity.", delay: 1200, color: "#ff0"}
             ],
             introLines: [
-                 "This space is for students who want clarity, not confusion.",
+                "This space is for students who want clarity, not confusion.",
                 "I’m Cypher, and my goal is simple: help you actually understand",
                 "what your lectures rushed through.",
 
@@ -691,116 +694,191 @@
 
             ],
             courseDetails: {
-                algorithms: {
-                    title: "Quantum Algorithms",
-                    info: "Explore quantum algorithms that revolutionize computation. Learn how quantum superposition and entanglement enable exponential speedups for specific problem classes. Master techniques like amplitude amplification and quantum Fourier transform.",
-                    plans: [
-                        {name: "Basic", price: "Free", features: "Intro videos, Basic exercises"},
-                        {name: "Advanced", price: "$49/month", features: "All content, Code templates, Forum access"},
-                        {name: "Premium", price: "$99/month", features: "Mentorship, Live Q&A, Project reviews"}
-                    ],
-                    offered: [
-                        "Shor's Algorithm for integer factorization",
-                        "Grover's Search for unstructured search",
-                        "Quantum Optimization techniques",
-                        "Quantum Machine Learning basics",
-                        "Quantum Error Correction methods"
-                    ],
-                    mentor: {
-                        name: "Dr. Quantum",
-                        bio: "Quantum computing pioneer with 15+ years research experience",
-                        image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=400&fit=crop"
-                    }
-                },
-                ml: {
-                    title: "Neural Architectures",
-                    info: "Dive into neural architectures for machine learning. Understand the mathematical foundations, implementation details, and practical applications of modern neural networks. From simple perceptrons to complex transformers.",
-                    plans: [
-                        {name: "Basic", price: "Free", features: "Intro to ML concepts"},
-                        {name: "Advanced", price: "$59/month", features: "All architectures, TensorFlow/PyTorch code"},
-                        {name: "Premium", price: "$119/month", features: "Custom architectures, Deployment guidance"}
-                    ],
-                    offered: [
-                        "Convolutional Neural Networks (CNNs)",
-                        "Recurrent Neural Networks (RNNs) & LSTMs",
-                        "Transformer architectures",
-                        "Generative Adversarial Networks (GANs)",
-                        "Quantum ML hybrids",
-                        "AutoML and Neural Architecture Search"
-                    ],
-                    mentor: {
-                        name: "Dr. Neuro",
-                        bio: "AI researcher specializing in neural network architectures",
-                        image: "https://images.unsplash.com/photo-1557862921-37829c790f19?w=400&h=400&fit=crop"
-                    }
-                },
-                security: {
-                    title: "Cybersecurity Mesh",
-                    info: "Master cybersecurity in a mesh network era. Learn defense strategies against quantum computing threats, implement zero-trust architectures, and understand AI-driven security systems.",
-                    plans: [
-                        {name: "Basic", price: "Free", features: "Security fundamentals"},
-                        {name: "Advanced", price: "$69/month", features: "Pen testing, Security protocols"},
-                        {name: "Premium", price: "$129/month", features: "Red team exercises, Incident response"}
-                    ],
-                    offered: [
-                        "Zero-Trust Security Models",
-                        "Quantum Encryption methods",
-                        "AI Threat Detection systems",
-                        "Blockchain Security",
-                        "IoT Security frameworks",
-                        "Cloud Security architectures"
-                    ],
-                    mentor: {
-                        name: "Agent Cypher",
-                        bio: "Former cybersecurity analyst turned ethical hacker",
-                        image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop"
-                    }
-                },
-                quantum: {
-                    title: "Quantum Computing",
-                    info: "Fundamentals and advanced quantum computing. Start from qubits and quantum gates, progress to complex circuits, and understand quantum algorithms and error correction.",
-                    plans: [
-                        {name: "Basic", price: "Free", features: "Qubits, basic gates"},
-                        {name: "Advanced", price: "$79/month", features: "Quantum circuits, Algorithms"},
-                        {name: "Premium", price: "$149/month", features: "Hardware access, Research projects"}
-                    ],
-                    offered: [
-                        "Qubit physics and mathematics",
-                        "Quantum gates and circuits",
-                        "Quantum teleportation",
-                        "Error Correction techniques",
-                        "Quantum hardware overview",
-                        "Quantum software development"
-                    ],
-                    mentor: {
-                        name: "Prof. Quantum",
-                        bio: "Quantum physicist with industry experience at leading tech companies",
-                        image: "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=400&h=400&fit=crop"
-                    }
-                },
-                systems: {
-                    title: "Distributed Systems",
-                    info: "Build and optimize distributed systems. Learn about consistency models, fault tolerance, scalability patterns, and modern distributed computing frameworks.",
-                    plans: [
-                        {name: "Basic", price: "Free", features: "Distributed concepts"},
-                        {name: "Advanced", price: "$89/month", features: "System design, Implementation"},
-                        {name: "Premium", price: "$169/month", features: "Production deployment, Optimization"}
-                    ],
-                    offered: [
-                        "Microservices architecture",
-                        "Blockchain Integration",
-                        "Scalable Architectures",
-                        "Consensus algorithms",
-                        "Distributed databases",
-                        "Container orchestration"
-                    ],
-                    mentor: {
-                        name: "Architect Node",
-                        bio: "Distributed systems engineer at global scale platforms",
-                        image: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=400&h=400&fit=crop"
-                    }
-                }
-            },
+    java: {
+        title: "Java Programming",
+        info: "Master Java through practice and project-based learning. Learn object-oriented principles, implement OOP systems, and build real-world applications.",
+        plans: [
+            {name: "Basic", price: "Free", features: "Intro videos, Basic exercises"},
+            {name: "Advanced", price: "k200/month", features: "All content, Code templates, Project building"},
+            {name: "Premium", price: "k300/month", features: "Mentorship, Live Q&A, Project reviews"}
+        ],
+        offered: [
+            "Object-Oriented Programming principles",
+            "Java Collections Framework",
+            "Exception Handling",
+            "Multithreading and Concurrency",
+            "JDBC and Database Connectivity",
+            "Spring Framework basics",
+            "Building REST APIs"
+        ],
+        mentor: {
+            name: "Rhodwell",
+            bio: "Fourth year Computer Science student at the University of Zambia, specializing in Software Engineering.",
+            image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop"
+        }
+    },
+    "discrete-math": {
+        title: "Discrete Mathematics",
+        info: "Master the mathematical foundations of computer science. Learn logic, proofs, combinatorics, graph theory, and discrete structures essential for algorithm design.",
+        plans: [
+            {name: "Basic", price: "Free", features: "Intro concepts, Basic exercises"},
+            {name: "Advanced", price: "k200/month", features: "All content, Problem sets, Solutions"},
+            {name: "Premium", price: "k300/month", features: "One-on-one tutoring, Exam prep"}
+        ],
+        offered: [
+            "Propositional and Predicate Logic",
+            "Set Theory and Functions",
+            "Proof Techniques",
+            "Combinatorics and Counting",
+            "Graph Theory",
+            "Boolean Algebra",
+            "Discrete Probability"
+        ],
+        mentor: {
+            name: "Humphrey",
+            bio: "Fourth year Computer Science student at the University of Zambia, excelling in Theoretical Computer Science.",
+            image: "https://images.unsplash.com/photo-1557862921-37829c790f19?w=400&h=400&fit=crop"
+        }
+    },
+    architecture: {
+        title: "Architecture and Computer Organization",
+        info: "Understand computer system design from transistors to high-level architecture. Learn about CPU design, memory systems, I/O, and performance optimization.",
+        plans: [
+            {name: "Basic", price: "Free", features: "Intro videos, Basic concepts"},
+            {name: "Advanced", price: "k200/month", features: "All content, Lab simulations, Assignments"},
+            {name: "Premium", price: "k300/month", features: "Hardware projects guidance, Design reviews"}
+        ],
+        offered: [
+            "Digital Logic Design",
+            "CPU Architecture and Instruction Sets",
+            "Memory Hierarchy and Cache Design",
+            "Pipeline Processing",
+            "Input/Output Systems",
+            "Parallel Processing",
+            "Performance Measurement"
+        ],
+        mentor: {
+            name: "Humphrey",
+            bio: "Fourth year Computer Science student at the University of Zambia, specializing in Systems Engineering.",
+            image: "https://images.unsplash.com/photo-1557862921-37829c790f19?w=400&h=400&fit=crop"
+        }
+    },
+    dbms: {
+        title: "Database Management Systems",
+        info: "Master database design, implementation, and management. Learn SQL, normalization, transaction processing, and modern database systems.",
+        plans: [
+            {name: "Basic", price: "Free", features: "SQL basics, Intro videos"},
+            {name: "Advanced", price: "k200/month", features: "All content, Database projects, Queries"},
+            {name: "Premium", price: "k300/month", features: "Complex project design, Optimization guidance"}
+        ],
+        offered: [
+            "Relational Database Design",
+            "SQL Programming",
+            "Normalization and ER Modeling",
+            "Transaction Management",
+            "Indexing and Query Optimization",
+            "NoSQL Databases",
+            "Database Security"
+        ],
+        mentor: {
+            name: "Ishmael D. Tembo",
+            bio: "Fourth year Computer Science student at the University of Zambia, specializing in Database Systems.",
+            image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=400&fit=crop"
+        }
+    },
+    os: {
+        title: "Operating Systems",
+        info: "Explore OS concepts including process management, memory management, file systems, and security. Understand how operating systems manage hardware resources.",
+        plans: [
+            {name: "Basic", price: "Free", features: "Intro concepts, Basic tutorials"},
+            {name: "Advanced", price: "k200/month", features: "All content, System programming, Labs"},
+            {name: "Premium", price: "k300/month", features: "Kernel programming guidance, Project reviews"}
+        ],
+        offered: [
+            "Process Management and Scheduling",
+            "Memory Management and Virtual Memory",
+            "File Systems Implementation",
+            "Deadlock Handling",
+            "Interprocess Communication",
+            "Security and Protection",
+            "Distributed Operating Systems"
+        ],
+        mentor: {
+            name: "Rhodwell",
+            bio: "Fourth year Computer Science student at the University of Zambia, specializing in Systems Programming.",
+            image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop"
+        }
+    },
+    "digital-electronics": {
+        title: "Digital Electronics",
+        info: "Learn digital circuit design from basic gates to complex systems. Understand combinational and sequential logic, memory elements, and digital system design.",
+        plans: [
+            {name: "Basic", price: "Free", features: "Logic gates, Basic circuits"},
+            {name: "Advanced", price: "k200/month", features: "All content, Circuit simulations, Design projects"},
+            {name: "Premium", price: "k300/month", features: "Complex design guidance, Hardware implementation"}
+        ],
+        offered: [
+            "Boolean Algebra and Logic Gates",
+            "Combinational Circuit Design",
+            "Sequential Circuits and Flip-Flops",
+            "Counters and Registers",
+            "Memory Devices",
+            "Digital Integrated Circuits",
+            "VHDL/Verilog Basics"
+        ],
+        mentor: {
+            name: "Ishmael D. Tembo",
+            bio: "Fourth year Computer Science student at the University of Zambia, specializing in Hardware Systems.",
+            image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=400&fit=crop"
+        }
+    },
+    algorithms: {
+        title: "Algorithms and Complexity",
+        info: "Master algorithm design, analysis, and optimization. Learn various algorithm paradigms and understand time/space complexity analysis.",
+        plans: [
+            {name: "Basic", price: "Free", features: "Intro videos, Basic exercises"},
+            {name: "Advanced", price: "k200/month", features: "All content, Algorithm implementation, Problem solving"},
+            {name: "Premium", price: "k300/month", features: "Competitive programming coaching, Interview prep"}
+        ],
+        offered: [
+            "Algorithm Analysis and Complexity",
+            "Divide and Conquer Algorithms",
+            "Dynamic Programming",
+            "Greedy Algorithms",
+            "Graph Algorithms",
+            "NP-Completeness Theory",
+            "Algorithm Optimization Techniques"
+        ],
+        mentor: {
+            name: "Humphrey",
+            bio: "Fourth year Computer Science student at the University of Zambia, specializing in Algorithms and Data Structures.",
+            image: "https://images.unsplash.com/photo-1557862921-37829c790f19?w=400&h=400&fit=crop"
+        }
+    },
+    "data-comm": {
+        title: "Data Communication",
+        info: "Understand data transmission, networking protocols, and communication systems. Learn about network architectures, protocols, and security.",
+        plans: [
+            {name: "Basic", price: "Free", features: "Networking basics, Intro videos"},
+            {name: "Advanced", price: "k200/month", features: "All content, Network simulations, Protocols"},
+            {name: "Premium", price: "k300/month", features: "Network design projects, Security implementation"}
+        ],
+        offered: [
+            "OSI and TCP/IP Models",
+            "Data Transmission Techniques",
+            "Network Protocols",
+            "LAN and WAN Technologies",
+            "Wireless and Mobile Networks",
+            "Network Security",
+            "Internet Architecture"
+        ],
+        mentor: {
+            name: "Rhodwell",
+            bio: "Fourth year Computer Science student at the University of Zambia, specializing in Networking and Communications.",
+            image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop"
+        }
+    }
+},
             init() {
                 this.cacheElements();
                 this.setupEventListeners();
