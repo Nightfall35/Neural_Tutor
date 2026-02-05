@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>root@neural-tutor:~$</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/effects.css">
+    <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+    <!-- CRT Overlay -->
+    <div class="crt-overlay"></div>
+    <div class="scan-line"></div>
+
+    <!-- Boot Terminal -->
+    <div class="boot-terminal" id="bootTerminal">
+        <div class="terminal-line" id="line1">
+            <span class="prompt"><span class="user">root</span>@<span class="host">neural-tutor</span>:<span class="path">/sys/boot</span>$</span>
+            <span class="command">init_system --mode=cyberpunk --quantum=on</span>
+            <span class="cursor"></span>
+        </div>
+        <div class="terminal-line" id="line2"></div>
+        <div class="terminal-line" id="line3"></div>
+        <div class="terminal-line" id="line4"></div>
+        <div class="terminal-line" id="line5"></div>
+        <div class="terminal-line" id="line6"></div>
+        <div class="terminal-line" id="line7"></div>
+        <div class="terminal-line" id="line8"></div>
+        <div class="terminal-line" id="line9"></div>
+        <div class="terminal-line" id="line10"></div>
+        <div class="terminal-line" id="line11"></div>
+        <div class="terminal-line" id="line12"></div>
+    </div>
+
+    <!-- Transition Overlay -->
+    <div class="transition-overlay cyber-grid" id="transitionOverlay"></div>
+
+    <!-- Loading Bar -->
+    <div class="transition-loading" id="transitionLoading">
+        <div class="loading-text" id="loadingText">INITIALIZING NEURAL MATRIX</div>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+    </div>
+
+    <!-- Matrix Rain Effect -->
+    <div class="matrix-rain" id="matrixRain"></div>
+
+    <!-- Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Main Interface -->
+    <div class="main-interface" id="mainInterface">
+        <div class="neural-network" id="neuralNetwork"></div>
+        
+        <div class="main-header">
+            <h1 class="main-title">NEURAL TUTOR v3.0</h1>
+            <div class="main-subtitle">>> SYNTHESIZING QUANTUM KNOWLEDGE <<</div>
+        </div>
+
+        <div class="hologram-container">
+            <!-- Card 1 -->
+            <div class="hologram-card" style="top: 15%; left: 5%; width: 28%;" data-tilt data-tilt-max="10" data-tilt-speed="400">
+                <div class="card-header">
+                    <i class="fas fa-brain card-icon"></i>
+                    <span class="glitch" data-text="NEURAL CONNECT">NEURAL CONNECT</span>
+                </div>
+                <div class="card-content">
+                    <p>▸ Direct neural interface protocol v2.1</p>
+                    <p>▸ Quantum entanglement knowledge transfer</p>
+                    <p>▸ Adaptive neuroplasticity algorithms</p>
+                    <p>▸ Real-time cognitive optimization</p>
+                    <p>▸ Haptic feedback integration</p>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="hologram-card" style="top: 15%; right: 5%; width: 28%;" data-tilt data-tilt-max="10" data-tilt-speed="400">
+                <div class="card-header">
+                    <i class="fas fa-code card-icon"></i>
+                    <span class="glitch" data-text="CODE MATRIX">CODE MATRIX</span>
+                </div>
+                <ul class="card-list">
+                    <li onclick="NeuralTutorUI.selectTopic('algorithms')">Quantum Algorithms</li>
+                    <li onclick="NeuralTutorUI.selectTopic('ml')">Neural Architectures</li>
+                    <li onclick="NeuralTutorUI.selectTopic('security')">Cybersecurity Mesh</li>
+                    <li onclick="NeuralTutorUI.selectTopic('quantum')">Quantum Computing</li>
+                    <li onclick="NeuralTutorUI.selectTopic('systems')">Distributed Systems</li>
+                </ul>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="hologram-card" style="top: 65%; left: 5%; width: 28%;" data-tilt data-tilt-max="10" data-tilt-speed="400">
+                <div class="card-header">
+                    <i class="fas fa-user-ninja card-icon"></i>
+                    <span class="glitch" data-text="MENTOR NETWORK">MENTOR NETWORK</span>
+                </div>
+                <div class="card-content">
+                    <p>∟ Dr. Kaito - Quantum AI Researcher</p>
+                    <p>∟ Nova - Cybersecurity Architect</p>
+                    <p>∟ Z3R0 - System Optimization Expert</p>
+                    <p>∟ Synapse - Neural Network Specialist</p>
+                    <p>∟ Quantum - Algorithm Designer</p>
+                </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="hologram-card" style="top: 65%; right: 5%; width: 28%;" data-tilt data-tilt-max="10" data-tilt-speed="400">
+                <div class="card-header">
+                    <i class="fas fa-bolt card-icon"></i>
+                    <span class="glitch" data-text="SYSTEM FEATURES">SYSTEM FEATURES</span>
+                </div>
+                <div class="card-content">
+                    <p>⚡ Holographic Debug Environment</p>
+                    <p>⚡ Neural Pair Programming</p>
+                    <p>⚡ Quantum Simulation Sessions</p>
+                    <p>⚡ Predictive Learning Analytics</p>
+                    <p>⚡ Cross-reality Collaboration</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Panel -->
+        <div class="data-panel">
+            <div class="data-item">
+                <span>SYSTEM STATUS</span>
+                <span class="data-value" id="systemStatus">ONLINE</span>
+            </div>
+            <div class="data-item">
+                <span>NEURAL LOAD</span>
+                <span class="data-value" id="neuralLoad">42%</span>
+            </div>
+            <div class="data-item">
+                <span>QUANTUM ENTANGLEMENT</span>
+                <span class="data-value" id="quantumEnt">89%</span>
+            </div>
+            <div class="data-item">
+                <span>BANDWIDTH</span>
+                <span class="data-value" id="bandwidth">14.7Gb/s</span>
+            </div>
+            <div class="data-item">
+                <span>ACTIVE SESSIONS</span>
+                <span class="data-value" id="activeSessions">247</span>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <button class="cyber-button" id="connectBtn" onclick="NeuralTutorUI.connectNeural()">
+                <i class="fas fa-plug"></i> NEURAL SYNC
+            </button>
+            <button class="cyber-button" id="tutorialBtn" onclick="NeuralTutorUI.startTutorial()">
+                <i class="fas fa-graduation-cap"></i> QUANTUM TUTORIAL
+            </button>
+            <button class="cyber-button" id="demoBtn" onclick="NeuralTutorUI.runDemo()">
+                <i class="fas fa-play"></i> SIMULATION
+            </button>
+            <button class="cyber-button" id="settingsBtn" onclick="NeuralTutorUI.openSettings()">
+                <i class="fas fa-cog"></i> SETTINGS
+            </button>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/effects.js"></script>
+    <script src="js/neural-network.js"></script>
+    <script src="js/transitions.js"></script>
+    <script src="js/ui-interactions.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+/* Control Panel */
+.control-panel {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+    z-index: 100;
+    background: rgba(0, 30, 40, 0.5);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    box-shadow: 
+        0 0 30px rgba(0, 255, 255, 0.2),
+        inset 0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+.cyber-button {
+    background: linear-gradient(135deg,
+        rgba(0, 40, 60, 0.9),
+        rgba(0, 20, 40, 0.9));
+    border: 2px solid #0ff;
+    color: #0ff;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 5px;
+    text-shadow: 0 0 5px #0ff;
+}
+
+.cyber-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(0, 255, 255, 0.4), 
+        transparent);
+    transition: 0.5s;
+}
+
+.cyber-button::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #0ff, #00ffaa, #0ff);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.cyber-button:hover::before {
+    left: 100%;
+}
+
+.cyber-button:hover::after {
+    opacity: 1;
+}
+
+.cyber-button:hover {
+    background: linear-gradient(135deg,
+        rgba(0, 255, 255, 0.2),
+        rgba(0, 200, 255, 0.2));
+    box-shadow: 
+        0 0 30px rgba(0, 255, 255, 0.5),
+        0 0 60px rgba(0, 255, 255, 0.3);
+    transform: translateY(-5px) scale(1.05);
+    color: #fff;
+}
+
+.cyber-button:active {
+    transform: translateY(-2px) scale(0.98);
+}
+
+/* Data Panel */
+.data-panel {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    background: linear-gradient(135deg,
+        rgba(0, 20, 30, 0.9),
+        rgba(0, 40, 60, 0.8));
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    padding: 25px;
+    border-radius: 10px;
+    min-width: 250px;
+    backdrop-filter: blur(10px);
+    box-shadow: 
+        0 0 30px rgba(0, 255, 255, 0.2),
+        inset 0 0 20px rgba(0, 255, 255, 0.1);
+    z-index: 100;
+}
+
+.data-item {
+    margin: 15px 0;
+    display: flex;
+    justify-content: space-between;
+    color: #0ff;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.data-value {
+    color: #f0f;
+    font-weight: bold;
+    text-shadow: 0 0 10px #f0f;
+    font-size: 1.2rem;
+    animation: valuePulse 2s infinite;
+}
+
+@keyframes valuePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Neural Network Visualization */
+.neural-network {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.neural-node {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle at center, #0ff, #00aaff);
+    border-radius: 50%;
+    box-shadow: 
+        0 0 15px #0ff,
+        0 0 30px rgba(0, 255, 255, 0.5),
+        inset 0 0 10px #fff;
+    animation: nodePulse 2s infinite ease-in-out;
+    pointer-events: none;
+}
+
+@keyframes nodePulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 
+            0 0 15px #0ff,
+            0 0 30px rgba(0, 255, 255, 0.5),
+            inset 0 0 10px #fff;
+    }
+    50% { 
+        transform: scale(1.5);
+        box-shadow: 
+            0 0 25px #0ff,
+            0 0 50px rgba(0, 255, 255, 0.8),
+            inset 0 0 15px #fff;
+    }
+}
+
+.neural-connection {
+    position: absolute;
+    background: linear-gradient(90deg, 
+        rgba(0, 255, 255, 0.8), 
+        rgba(0, 255, 255, 0.1));
+    height: 1px;
+    transform-origin: 0 0;
+    pointer-events: none;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .hologram-card {
+        width: 45% !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .hologram-card {
+        position: relative !important;
+        width: 90% !important;
+        margin: 20px auto;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+    }
+    
+    .control-panel {
+        flex-direction: column;
+        width: 90%;
+    }
+    
+    .main-title {
+        font-size: 2.5rem;
+    }
+    
+    .data-panel {
+        position: relative;
+        margin: 20px auto;
+        width: 90%;
+        top: auto;
+        right: auto;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion) {
+    .neural-node,
+    .data-value,
+    .main-title,
+    .main-subtitle,
+    .hologram-card::before,
+    .cyber-button:hover,
+    .card-list li:hover {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .boot-terminal,
+    .main-interface {
+        display: none;
+    }
+    
+    body::before {
+        content: "Neural Tutor v3.0 Interface";
+        font-size: 2rem;
+        color: #000;
+    }
+}
