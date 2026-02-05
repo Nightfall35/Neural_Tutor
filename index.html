@@ -6,6 +6,7 @@
     <title>root@neural-tutor:~$</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -25,6 +26,7 @@
             width: 100vw;
             position: relative;
         }
+        /* CRT Overlay */
         .crt-overlay {
             position: fixed;
             top: 0;
@@ -47,6 +49,7 @@
             75% { opacity: 0.96; transform: translateY(0px); }
             100% { opacity: 0.95; transform: translateY(-0.2px); }
         }
+        /* Scan Line */
         .scan-line {
             position: fixed;
             top: 0;
@@ -62,6 +65,7 @@
             0% { top: -2px; }
             100% { top: 100%; }
         }
+        /* Matrix Rain Effect */
         .matrix-rain {
             position: fixed;
             top: 0;
@@ -74,6 +78,7 @@
             overflow: hidden;
             transition: opacity 2s ease-in-out;
         }
+        /* Particles */
         .particles {
             position: fixed;
             top: 0;
@@ -84,6 +89,7 @@
             z-index: 1;
             overflow: hidden;
         }
+        /* Boot Terminal */
         .boot-terminal {
             position: fixed;
             top: 0;
@@ -132,6 +138,7 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
+        /* Transition Overlay */
         .transition-overlay {
             position: fixed;
             top: 0;
@@ -154,6 +161,7 @@
             0% { background-position: 0 0; }
             100% { background-position: 50px 50px; }
         }
+        /* Loading Bar */
         .transition-loading {
             position: fixed;
             top: 50%;
@@ -218,6 +226,7 @@
             position: relative;
             z-index: 2;
         }
+        /* Introduction Message */
         .intro-message {
             position: fixed;
             top: 50%;
@@ -238,107 +247,274 @@
             display: block;
             margin-bottom: 10px;
         }
-        /* ────────────── Modified Terminals ────────────── */
+        /* Course Terminals - MODIFIED */
         .course-terminal {
             position: fixed;
-            top: 8%;
-            left: 3%;
-            width: 18%;
-            height: 84%;
-            background: rgba(10, 10, 10, 0.94);
+            top: 10%;
+            left: 2%; /* Changed from 5% to 2% for more space */
+            width: 250px; /* Fixed small width */
+            height: 85%; /* Tall but thin */
+            background: rgba(10, 10, 10, 0.95);
             border: 1px solid #00ff41;
             border-radius: 5px;
-            padding: 18px;
+            padding: 15px;
             z-index: 1200;
             opacity: 0;
-            transform: scale(0.92);
-            transition: opacity 0.6s, transform 0.6s;
+            transform: scale(0.9);
+            transition: opacity 0.5s, transform 0.5s;
             overflow-y: auto;
-            font-size: 0.95rem;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
         }
         .course-terminal h2 {
             color: #4d4dff;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+            padding-bottom: 10px;
         }
         .course-list {
             list-style: none;
         }
         .course-list li {
-            padding: 10px 8px;
+            padding: 12px 8px;
             cursor: pointer;
             transition: all 0.2s;
+            margin-bottom: 5px;
+            border: 1px solid transparent;
             border-radius: 3px;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
         }
         .course-list li:hover {
-            background: rgba(0, 255, 65, 0.09);
-            padding-left: 12px;
+            background: rgba(0, 255, 65, 0.1);
+            border-color: rgba(0, 255, 65, 0.3);
+            transform: translateX(5px);
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
         }
+        .course-list li::after {
+            content: '>';
+            position: absolute;
+            right: 10px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            color: #00ff41;
+        }
+        .course-list li:hover::after {
+            opacity: 1;
+        }
+        
+        /* Details Terminal - MODIFIED */
         .details-terminal {
             position: fixed;
-            top: 8%;
-            right: 3%;
-            width: 72%;
-            height: 84%;
-            background: rgba(10, 10, 10, 0.94);
+            top: 10%;
+            right: 2%; /* Changed from 5% to 2% */
+            width: calc(96% - 270px); /* Takes remaining space after left terminal */
+            height: 85%;
+            background: rgba(10, 10, 10, 0.95);
             border: 1px solid #00ff41;
             border-radius: 5px;
-            padding: 24px;
+            padding: 20px;
             z-index: 1200;
             opacity: 0;
-            transform: scale(0.92);
-            transition: opacity 0.6s, transform 0.6s;
+            transform: scale(0.9);
+            transition: opacity 0.5s, transform 0.5s;
             overflow-y: auto;
             display: none;
-            position: relative;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
         }
         .details-terminal h2 {
             color: #4d4dff;
-            margin-bottom: 1.4rem;
-            padding-right: 180px;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-shadow: 0 0 10px rgba(77, 77, 255, 0.5);
+            border-bottom: 2px solid rgba(0, 255, 65, 0.4);
+            padding-bottom: 10px;
         }
-        .profile-header {
+        
+        /* Course Content Container */
+        .course-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        /* Mentor Photo Section - NEW */
+        .mentor-photo {
             position: absolute;
             top: 20px;
-            right: 24px;
-            width: 160px;
-            height: 160px;
-            border-radius: 8px;
-            overflow: hidden;
+            right: 20px;
+            width: 150px;
+            height: 150px;
             border: 2px solid #00ff41;
-            box-shadow: 0 0 20px rgba(0,255,65,0.35);
-            opacity: 0;
-            transform: scale(0.7);
-            transition: all 0.8s ease;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+            display: none;
+            z-index: 10;
         }
-        .profile-header.visible {
-            opacity: 1;
-            transform: scale(1);
-        }
-        .profile-header img {
+        
+        .mentor-photo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.3s;
         }
-        .typed-content {
-            white-space: pre-wrap;
+        
+        .mentor-photo:hover img {
+            transform: scale(1.05);
+        }
+        
+        .mentor-photo::before {
+            content: 'MENTOR';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            background: linear-gradient(90deg, #00ff41, #4d4dff);
+            color: #000;
+            font-size: 0.7rem;
+            font-weight: bold;
+            padding: 3px 10px;
+            text-align: center;
+            letter-spacing: 1px;
+            z-index: 2;
+        }
+        
+        /* Content Typing Effect */
+        .typing-content {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #d3d3d3;
+            margin-top: 10px;
+            min-height: 200px;
+        }
+        
+        .content-line {
+            margin-bottom: 15px;
             opacity: 0;
-            padding-top: 180px;
-            line-height: 1.5;
-            font-size: 1.05rem;
+            transform: translateY(10px);
+            transition: opacity 0.3s, transform 0.3s;
         }
+        
+        .content-line.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .content-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(0, 20, 0, 0.1);
+            border-left: 3px solid #00ff41;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .content-section h3 {
+            color: #4d4dff;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .content-section ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+        
+        .content-section li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .content-section li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #00ff41;
+        }
+        
+        /* Plans Styling */
+        .plans-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .plan {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            background: rgba(0, 30, 0, 0.2);
+            border: 1px solid rgba(0, 255, 65, 0.3);
+            border-radius: 5px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .plan:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 255, 65, 0.2);
+        }
+        
+        .plan h4 {
+            color: #ffa500;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .plan-price {
+            color: #00ff41;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .plan-features {
+            font-size: 0.9rem;
+            color: #b3b3b3;
+        }
+        
         .notification { animation: slideIn 0.3s ease-out; }
         @keyframes slideIn {
             from { opacity: 0; transform: translate(-50%, -20px); }
             to { opacity: 1; transform: translate(-50%, 0); }
         }
+        
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .course-terminal {
+                width: 220px;
+            }
+            .details-terminal {
+                width: calc(96% - 240px);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .course-terminal, .details-terminal {
+                position: relative;
+                width: 96%;
+                height: auto;
+                margin: 2%;
+                min-height: 300px;
+            }
+            .mentor-photo {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin: 0 auto 20px;
+            }
+        }
     </style>
 </head>
 <body>
-
+    <!-- CRT Overlay -->
     <div class="crt-overlay"></div>
     <div class="scan-line"></div>
 
+    <!-- Boot Terminal -->
     <div class="boot-terminal" id="bootTerminal">
         <div class="terminal-line" id="line1">
             <span class="prompt"><span class="user">root</span>@<span class="host">neural-tutor</span>:<span class="path">/sys/boot</span>$</span>
@@ -358,8 +534,10 @@
         <div class="terminal-line" id="line12"></div>
     </div>
 
+    <!-- Transition Overlay -->
     <div class="transition-overlay cyber-grid" id="transitionOverlay"></div>
 
+    <!-- Loading Bar -->
     <div class="transition-loading" id="transitionLoading">
         <div class="loading-text" id="loadingText">INITIALIZING NEURAL MATRIX</div>
         <div class="loading-bar">
@@ -367,12 +545,18 @@
         </div>
     </div>
 
+    <!-- Matrix Rain Effect -->
     <div class="matrix-rain" id="matrixRain"></div>
+
+    <!-- Particles -->
     <div class="particles" id="particles"></div>
+
+    <!-- Introduction Message -->
     <div class="intro-message" id="introMessage"></div>
 
+    <!-- Course Terminal (Left - Small and Thin) -->
     <div class="course-terminal" id="courseTerminal">
-        <h2>Available Courses</h2>
+        <h2>COURSES</h2>
         <ul class="course-list">
             <li data-topic="algorithms">Quantum Algorithms</li>
             <li data-topic="ml">Neural Architectures</li>
@@ -382,12 +566,17 @@
         </ul>
     </div>
 
+    <!-- Details Terminal (Right - Big with Photo) -->
     <div class="details-terminal" id="detailsTerminal">
-        <div class="profile-header" id="profilePhoto">
-            <img src="" alt="Course Instructor">
+        <!-- Mentor Photo Container -->
+        <div class="mentor-photo" id="mentorPhoto">
+            <img src="" alt="Mentor" id="mentorImage">
         </div>
-        <h2>Course Details</h2>
-        <div class="typed-content" id="detailsContent"></div>
+        
+        <h2 id="courseTitle">Course Details</h2>
+        <div class="course-content">
+            <div class="typing-content" id="typingContent"></div>
+        </div>
     </div>
 
     <script>
@@ -395,7 +584,9 @@
             createMatrixRain() {
                 const container = document.getElementById('matrixRain');
                 if (!container) return;
+
                 const columns = Math.floor(window.innerWidth / 25);
+
                 for (let i = 0; i < columns; i++) {
                     const column = document.createElement('div');
                     column.style.cssText = `
@@ -417,6 +608,7 @@
                 const speed = 1.5 + Math.random() * 2;
                 const height = 40 + Math.random() * 100;
                 column.style.height = `${height}px`;
+
                 function fall() {
                     position += speed;
                     if (position > window.innerHeight) {
@@ -431,6 +623,7 @@
             createParticles() {
                 const container = document.getElementById('particles');
                 if (!container) return;
+
                 for (let i = 0; i < 30; i++) {
                     const particle = document.createElement('div');
                     particle.style.cssText = `
@@ -451,8 +644,10 @@
                 let x = Math.random() * 100;
                 let y = Math.random() * 100;
                 let phase = Math.random() * Math.PI * 2;
+
                 particle.style.left = `${x}%`;
                 particle.style.top = `${y}%`;
+
                 function float() {
                     const time = Date.now() / 1000;
                     x += Math.sin(time + phase) * 0.03;
@@ -489,40 +684,119 @@
             introLines: [
                 "Greetings, seeker of knowledge.",
                 "I am Neural Tutor v3.0, your quantum AI guide in the digital realm.",
-                "Created by altair, master architect of cyberpunk learning systems.",
+                "Created by [Your Name/Altair], master architect of cyberpunk learning systems.",
                 "Together, we shall unlock the secrets of advanced computation and neural frontiers.",
                 "Prepare for enlightenment."
             ],
             courseDetails: {
                 algorithms: {
-                    photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-                    info: "Explore quantum algorithms that revolutionize computation.",
-                    plans: "Basic: Free intro | Advanced: $49/month | Premium: $99/month with mentorship.",
-                    offered: "Shor's Algorithm, Grover's Search, Quantum Optimization techniques."
+                    title: "Quantum Algorithms",
+                    info: "Explore quantum algorithms that revolutionize computation. Learn how quantum superposition and entanglement enable exponential speedups for specific problem classes. Master techniques like amplitude amplification and quantum Fourier transform.",
+                    plans: [
+                        {name: "Basic", price: "Free", features: "Intro videos, Basic exercises"},
+                        {name: "Advanced", price: "$49/month", features: "All content, Code templates, Forum access"},
+                        {name: "Premium", price: "$99/month", features: "Mentorship, Live Q&A, Project reviews"}
+                    ],
+                    offered: [
+                        "Shor's Algorithm for integer factorization",
+                        "Grover's Search for unstructured search",
+                        "Quantum Optimization techniques",
+                        "Quantum Machine Learning basics",
+                        "Quantum Error Correction methods"
+                    ],
+                    mentor: {
+                        name: "Dr. Quantum",
+                        bio: "Quantum computing pioneer with 15+ years research experience",
+                        image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=400&fit=crop"
+                    }
                 },
                 ml: {
-                    photo: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-                    info: "Dive into neural architectures for machine learning.",
-                    plans: "Basic: Free | Advanced: $59/month | Premium: $119/month.",
-                    offered: "CNNs, RNNs, Transformers, Quantum ML hybrids."
+                    title: "Neural Architectures",
+                    info: "Dive into neural architectures for machine learning. Understand the mathematical foundations, implementation details, and practical applications of modern neural networks. From simple perceptrons to complex transformers.",
+                    plans: [
+                        {name: "Basic", price: "Free", features: "Intro to ML concepts"},
+                        {name: "Advanced", price: "$59/month", features: "All architectures, TensorFlow/PyTorch code"},
+                        {name: "Premium", price: "$119/month", features: "Custom architectures, Deployment guidance"}
+                    ],
+                    offered: [
+                        "Convolutional Neural Networks (CNNs)",
+                        "Recurrent Neural Networks (RNNs) & LSTMs",
+                        "Transformer architectures",
+                        "Generative Adversarial Networks (GANs)",
+                        "Quantum ML hybrids",
+                        "AutoML and Neural Architecture Search"
+                    ],
+                    mentor: {
+                        name: "Dr. Neuro",
+                        bio: "AI researcher specializing in neural network architectures",
+                        image: "https://images.unsplash.com/photo-1557862921-37829c790f19?w=400&h=400&fit=crop"
+                    }
                 },
                 security: {
-                    photo: "https://images.unsplash.com/photo-1556155099-222a4a8c6f8d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-                    info: "Master cybersecurity in a mesh network era.",
-                    plans: "Basic: Free | Advanced: $69/month | Premium: $129/month.",
-                    offered: "Zero-Trust Models, Quantum Encryption, AI Threat Detection."
+                    title: "Cybersecurity Mesh",
+                    info: "Master cybersecurity in a mesh network era. Learn defense strategies against quantum computing threats, implement zero-trust architectures, and understand AI-driven security systems.",
+                    plans: [
+                        {name: "Basic", price: "Free", features: "Security fundamentals"},
+                        {name: "Advanced", price: "$69/month", features: "Pen testing, Security protocols"},
+                        {name: "Premium", price: "$129/month", features: "Red team exercises, Incident response"}
+                    ],
+                    offered: [
+                        "Zero-Trust Security Models",
+                        "Quantum Encryption methods",
+                        "AI Threat Detection systems",
+                        "Blockchain Security",
+                        "IoT Security frameworks",
+                        "Cloud Security architectures"
+                    ],
+                    mentor: {
+                        name: "Agent Cypher",
+                        bio: "Former cybersecurity analyst turned ethical hacker",
+                        image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop"
+                    }
                 },
                 quantum: {
-                    photo: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-                    info: "Fundamentals and advanced quantum computing.",
-                    plans: "Basic: Free | Advanced: $79/month | Premium: $149/month.",
-                    offered: "Qubits, Gates, Circuits, Error Correction."
+                    title: "Quantum Computing",
+                    info: "Fundamentals and advanced quantum computing. Start from qubits and quantum gates, progress to complex circuits, and understand quantum algorithms and error correction.",
+                    plans: [
+                        {name: "Basic", price: "Free", features: "Qubits, basic gates"},
+                        {name: "Advanced", price: "$79/month", features: "Quantum circuits, Algorithms"},
+                        {name: "Premium", price: "$149/month", features: "Hardware access, Research projects"}
+                    ],
+                    offered: [
+                        "Qubit physics and mathematics",
+                        "Quantum gates and circuits",
+                        "Quantum teleportation",
+                        "Error Correction techniques",
+                        "Quantum hardware overview",
+                        "Quantum software development"
+                    ],
+                    mentor: {
+                        name: "Prof. Quantum",
+                        bio: "Quantum physicist with industry experience at leading tech companies",
+                        image: "https://images.unsplash.com/photo-1555255707-c07966088b7b?w=400&h=400&fit=crop"
+                    }
                 },
                 systems: {
-                    photo: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-                    info: "Build and optimize distributed systems.",
-                    plans: "Basic: Free | Advanced: $89/month | Premium: $169/month.",
-                    offered: "Microservices, Blockchain Integration, Scalable Architectures."
+                    title: "Distributed Systems",
+                    info: "Build and optimize distributed systems. Learn about consistency models, fault tolerance, scalability patterns, and modern distributed computing frameworks.",
+                    plans: [
+                        {name: "Basic", price: "Free", features: "Distributed concepts"},
+                        {name: "Advanced", price: "$89/month", features: "System design, Implementation"},
+                        {name: "Premium", price: "$169/month", features: "Production deployment, Optimization"}
+                    ],
+                    offered: [
+                        "Microservices architecture",
+                        "Blockchain Integration",
+                        "Scalable Architectures",
+                        "Consensus algorithms",
+                        "Distributed databases",
+                        "Container orchestration"
+                    ],
+                    mentor: {
+                        name: "Architect Node",
+                        bio: "Distributed systems engineer at global scale platforms",
+                        image: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=400&h=400&fit=crop"
+                    }
                 }
             },
             init() {
@@ -542,13 +816,18 @@
                 this.elements.matrixRain = document.getElementById('matrixRain');
                 this.elements.courseTerminal = document.getElementById('courseTerminal');
                 this.elements.detailsTerminal = document.getElementById('detailsTerminal');
-                this.elements.detailsContent = document.getElementById('detailsContent');
-                this.elements.profilePhoto = document.getElementById('profilePhoto');
+                this.elements.typingContent = document.getElementById('typingContent');
+                this.elements.courseTitle = document.getElementById('courseTitle');
+                this.elements.mentorPhoto = document.getElementById('mentorPhoto');
+                this.elements.mentorImage = document.getElementById('mentorImage');
             },
             setupEventListeners() {
                 document.addEventListener('keydown', (e) => {
-                    if (e.ctrlKey && e.key === 'r') location.reload();
+                    if (e.ctrlKey && e.key === 'r') {
+                        location.reload();
+                    }
                 });
+                // Course selection
                 const courseList = document.querySelector('.course-list');
                 if (courseList) {
                     courseList.addEventListener('click', (e) => {
@@ -561,36 +840,36 @@
             },
             async startBootSequence() {
                 const lines = Array.from({length: 12}, (_, i) => document.getElementById(`line${i + 1}`));
+
                 lines[0].style.opacity = '1';
+
                 for (let i = 0; i < this.bootSequence.length; i++) {
                     const line = lines[i + 1];
-                    const seq = this.bootSequence[i];
+                    const sequence = this.bootSequence[i];
+
                     if (line) {
                         line.style.opacity = '1';
-                        line.style.color = seq.color;
+                        line.style.color = sequence.color;
                         line.style.display = 'block';
                         line.textContent = '';
-                        await this.typeText(line, seq.text, 30);
+
+                        await this.typeText(line, sequence.text, 30);
                         this.playTypingSound();
-                        await Utils.sleep(seq.delay);
+                        await Utils.sleep(sequence.delay);
                     }
                 }
+
                 setTimeout(() => Transitions.startTransition(), 1000);
             },
-            async typeText(element, text, speed = 35) {
+            async typeText(element, text, speed) {
                 return new Promise(resolve => {
                     let i = 0;
-                    element.textContent = '';
-                    element.style.opacity = '1';
-                    const interval = setInterval(() => {
+                    const typingInterval = setInterval(() => {
                         if (i < text.length) {
                             element.textContent += text.charAt(i);
                             i++;
-                            if (element.scrollHeight > element.clientHeight) {
-                                element.scrollTop = element.scrollHeight;
-                            }
                         } else {
-                            clearInterval(interval);
+                            clearInterval(typingInterval);
                             resolve();
                         }
                     }, speed);
@@ -600,63 +879,132 @@
                 return new Promise(resolve => {
                     let text = element.textContent;
                     let i = text.length;
-                    const interval = setInterval(() => {
+                    const erasingInterval = setInterval(() => {
                         if (i > 0) {
                             element.textContent = text.substring(0, i - 1);
                             i--;
                         } else {
-                            clearInterval(interval);
+                            clearInterval(erasingInterval);
                             resolve();
                         }
                     }, speed);
                 });
             },
             playTypingSound() {
-                try {
-                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.frequency.value = 800 + Math.random() * 400;
-                    osc.type = 'sine';
-                    gain.gain.setValueAtTime(0.02, ctx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-                    osc.start();
-                    osc.stop(ctx.currentTime + 0.1);
-                } catch(e) {}
+                if (window.AudioContext || window.webkitAudioContext) {
+                    try {
+                        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        oscillator.frequency.value = 800 + Math.random() * 400;
+                        oscillator.type = 'sine';
+                        gainNode.gain.setValueAtTime(0.02, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.1);
+                        oscillator.start();
+                        oscillator.stop(audioContext.currentTime + 0.1);
+                    } catch (e) {}
+                }
             },
             speakText(text) {
                 if ('speechSynthesis' in window) {
-                    const u = new SpeechSynthesisUtterance(text);
-                    u.voice = speechSynthesis.getVoices().find(v => v.name.includes('Google') || v.name.includes('English')) || null;
-                    u.rate = 1.0;
-                    u.pitch = 1.0;
-                    speechSynthesis.speak(u);
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.voice = speechSynthesis.getVoices().find(voice => voice.name.includes('Google') || voice.name.includes('English')) || null;
+                    utterance.rate = 1.0;
+                    utterance.pitch = 1.0;
+                    speechSynthesis.speak(utterance);
                 }
             },
             async showCourseDetails(topic) {
-                const data = this.courseDetails[topic];
-                if (!data) return;
+                const details = this.courseDetails[topic];
+                if (!details) return;
 
-                const photo = document.getElementById('profilePhoto');
-                const content = this.elements.detailsContent;
-                const terminal = this.elements.detailsTerminal;
+                // Update course title
+                this.elements.courseTitle.textContent = details.title;
 
-                photo.querySelector('img').src = data.photo;
-                photo.classList.add('visible');
+                // Show and update mentor photo
+                this.elements.mentorPhoto.style.display = 'block';
+                this.elements.mentorImage.src = details.mentor.image;
+                this.elements.mentorImage.alt = details.mentor.name;
 
-                const fullText = `Information:\n  ${data.info}\n\nPlans:\n  ${data.plans}\n\nWhat's Offered:\n  ${data.offered}`;
-
-                content.textContent = '';
-                terminal.style.display = 'block';
-
+                // Show details terminal with typing effect
+                this.elements.detailsTerminal.style.display = 'block';
+                this.elements.typingContent.innerHTML = '';
+                
                 setTimeout(() => {
-                    terminal.style.opacity = '1';
-                    terminal.style.transform = 'scale(1)';
-                }, 50);
+                    this.elements.detailsTerminal.style.opacity = 1;
+                    this.elements.detailsTerminal.style.transform = 'scale(1)';
+                    this.typeCourseContent(details);
+                }, 10);
+            },
+            async typeCourseContent(details) {
+                const contentDiv = this.elements.typingContent;
+                contentDiv.innerHTML = '';
 
-                await this.typeText(content, fullText, 28);
+                // Create content sections
+                const sections = [
+                    {
+                        title: "Course Information",
+                        content: `<p>${details.info}</p>`
+                    },
+                    {
+                        title: "What You'll Learn",
+                        content: `<ul>${details.offered.map(item => `<li>${item}</li>`).join('')}</ul>`
+                    },
+                    {
+                        title: "Learning Plans",
+                        content: `
+                            <div class="plans-container">
+                                ${details.plans.map(plan => `
+                                    <div class="plan">
+                                        <h4>${plan.name}</h4>
+                                        <div class="plan-price">${plan.price}</div>
+                                        <div class="plan-features">${plan.features}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `
+                    },
+                    {
+                        title: "Mentor",
+                        content: `<p><strong>${details.mentor.name}</strong> - ${details.mentor.bio}</p>`
+                    }
+                ];
+
+                // Type each section
+                for (const section of sections) {
+                    const sectionDiv = document.createElement('div');
+                    sectionDiv.className = 'content-section';
+                    
+                    const title = document.createElement('h3');
+                    title.textContent = section.title;
+                    sectionDiv.appendChild(title);
+                    
+                    const content = document.createElement('div');
+                    content.innerHTML = section.content;
+                    sectionDiv.appendChild(content);
+                    
+                    contentDiv.appendChild(sectionDiv);
+                    
+                    // Type the title
+                    await this.typeText(title, section.title, 30);
+                    this.playTypingSound();
+                    
+                    // Type the content
+                    const textElements = content.querySelectorAll('p, li, div:not(.plans-container)');
+                    for (const element of textElements) {
+                        if (element.textContent.trim()) {
+                            const originalText = element.textContent;
+                            element.textContent = '';
+                            await this.typeText(element, originalText, 20);
+                            this.playTypingSound();
+                            await Utils.sleep(100);
+                        }
+                    }
+                    
+                    await Utils.sleep(500);
+                }
             }
         };
 
@@ -677,14 +1025,15 @@
             },
             async animateLoadingBar() {
                 return new Promise(resolve => {
-                    let p = 0;
-                    const iv = setInterval(() => {
-                        p += 1;
-                        const ease = Utils.easeOutQuad(p / 100);
+                    let progress = 0;
+                    const interval = setInterval(() => {
+                        progress += 1;
+                        const ease = Utils.easeOutQuad(progress / 100);
                         this.elements.loadingProgress.style.width = `${ease * 100}%`;
-                        this.elements.loadingText.textContent = this.getLoadingText(p);
-                        if (p >= 100) {
-                            clearInterval(iv);
+                        this.elements.loadingText.textContent = this.getLoadingText(progress);
+
+                        if (progress >= 100) {
+                            clearInterval(interval);
                             resolve();
                         }
                     }, 20);
@@ -693,23 +1042,28 @@
             async terminalDeconstruction() {
                 return new Promise(resolve => {
                     const lines = Array.from({length: 12}, (_, i) => document.getElementById(`line${i + 1}`));
-                    const garbage = "01!@#$%^&*()_+-=[]{}|;:,.<>?";
-                    lines.forEach(l => {
-                        if (l.textContent) {
-                            let s = '';
-                            for (let c of l.textContent) s += c === ' ' ? ' ' : garbage[Math.floor(Math.random()*garbage.length)];
-                            l.textContent = s;
+                    const chars = "01!@#$%^&*()_+-=[]{}|;:,.<>?";
+
+                    lines.forEach(line => {
+                        if (line.textContent) {
+                            let newText = '';
+                            for (let char of line.textContent) {
+                                newText += char === ' ' ? ' ' : chars[Math.floor(Math.random() * chars.length)];
+                            }
+                            line.textContent = newText;
                         }
                     });
+
                     let frame = 0;
-                    const iv = setInterval(() => {
-                        lines.forEach(l => {
-                            l.style.transform = `translate(${Math.random()*40-20}px, ${Math.random()*40-20}px) rotate(${Math.random()*10-5}deg)`;
-                            l.style.opacity = Math.random();
+                    const explodeInterval = setInterval(() => {
+                        lines.forEach(line => {
+                            line.style.transform = `translate(${Math.random() * 40 - 20}px, ${Math.random() * 40 - 20}px) rotate(${Math.random() * 10 - 5}deg)`;
+                            line.style.opacity = Math.random();
                         });
+
                         frame++;
                         if (frame >= 20) {
-                            clearInterval(iv);
+                            clearInterval(explodeInterval);
                             this.elements.bootTerminal.style.opacity = 0;
                             setTimeout(() => {
                                 this.elements.bootTerminal.style.display = 'none';
@@ -723,25 +1077,27 @@
                 return new Promise(resolve => {
                     this.elements.transitionOverlay.style.opacity = 1;
                     this.elements.transitionOverlay.style.display = 'block';
+
                     let i = 0;
-                    const iv = setInterval(() => {
+                    const gridInterval = setInterval(() => {
                         const size = 50 + Math.sin(i/10) * 10;
                         this.elements.transitionOverlay.style.backgroundSize = `${size}px ${size}px`;
                         this.elements.transitionOverlay.style.filter = `hue-rotate(${i * 3.6}deg)`;
+
                         i += 2;
                         if (i > 100) {
-                            clearInterval(iv);
-                            const colors = ['#0ff','#f0f','#0f0','#ff0'];
-                            let idx = 0;
-                            const flash = setInterval(() => {
-                                if (idx < colors.length) {
-                                    this.elements.transitionOverlay.style.backgroundColor = colors[idx];
+                            clearInterval(gridInterval);
+                            const colors = ['#0ff', '#f0f', '#0f0', '#ff0'];
+                            let colorIndex = 0;
+                            const flashInterval = setInterval(() => {
+                                if (colorIndex < colors.length) {
+                                    this.elements.transitionOverlay.style.backgroundColor = colors[colorIndex];
                                     setTimeout(() => {
                                         this.elements.transitionOverlay.style.backgroundColor = 'transparent';
-                                        idx++;
+                                        colorIndex++;
                                     }, 30);
                                 } else {
-                                    clearInterval(flash);
+                                    clearInterval(flashInterval);
                                     this.elements.transitionOverlay.style.opacity = 0;
                                     this.elements.transitionLoading.style.opacity = 0;
                                     setTimeout(resolve, 300);
@@ -752,49 +1108,75 @@
                 });
             },
             async postGlitchSequence() {
+                // Screen dark for 3 seconds
                 document.body.style.backgroundColor = '#000000';
                 await Utils.sleep(3000);
+
+                // Type introduction message
                 this.elements.introMessage.style.opacity = 1;
-                const lines = [];
-                for (let txt of NeuralTutor.introLines) {
-                    const div = document.createElement('div');
-                    div.className = 'intro-line';
-                    this.elements.introMessage.appendChild(div);
-                    await NeuralTutor.typeText(div, txt, 50);
-                    NeuralTutor.speakText(txt);
-                    lines.push(div);
-                    await Utils.sleep(500);
+                const introLines = NeuralTutor.introLines;
+                const lineElements = [];
+
+                for (let i = 0; i < introLines.length; i++) {
+                    const lineDiv = document.createElement('div');
+                    lineDiv.className = 'intro-line';
+                    lineDiv.style.opacity = 1;
+                    this.elements.introMessage.appendChild(lineDiv);
+                    await NeuralTutor.typeText(lineDiv, introLines[i], 50);
+                    NeuralTutor.speakText(introLines[i]); // Voice synthesis
+                    lineElements.push(lineDiv);
+                    await Utils.sleep(500); // Pause between lines
                 }
+
+                // Linger for 5 seconds
                 await Utils.sleep(5000);
-                for (let i = lines.length - 1; i >= 0; i--) {
-                    await NeuralTutor.eraseText(lines[i], 50);
+
+                // Erase in reverse line by line
+                for (let i = lineElements.length - 1; i >= 0; i--) {
+                    await NeuralTutor.eraseText(lineElements[i], 50);
                     await Utils.sleep(500);
                 }
+
                 this.elements.introMessage.style.opacity = 0;
                 this.elements.introMessage.innerHTML = '';
+
+                // Screen dark again
                 await Utils.sleep(1000);
+
+                // Slowly start matrix rain
                 this.elements.matrixRain.style.opacity = 0.2;
                 await Utils.sleep(2000);
+
+                // Draw left terminal (small and thin)
                 this.elements.courseTerminal.style.opacity = 1;
                 this.elements.courseTerminal.style.transform = 'scale(1)';
             },
-            getLoadingText(p) {
+            getLoadingText(percent) {
                 const phases = [
-                    {s:0, t:"INITIALIZING QUANTUM CORE"},
-                    {s:20, t:"LOADING NEURAL MATRIX"},
-                    {s:40, t:"SYNCING KNOWLEDGE DATABASE"},
-                    {s:60, t:"CALIBRATING ALGORITHMS"},
-                    {s:80, t:"ESTABLISHING ENTANGLEMENT"},
-                    {s:90, t:"SYSTEM READY"}
+                    {start: 0, text: "INITIALIZING QUANTUM CORE"},
+                    {start: 20, text: "LOADING NEURAL MATRIX"},
+                    {start: 40, text: "SYNCING KNOWLEDGE DATABASE"},
+                    {start: 60, text: "CALIBRATING ALGORITHMS"},
+                    {start: 80, text: "ESTABLISHING ENTANGLEMENT"},
+                    {start: 90, text: "SYSTEM READY"}
                 ];
-                for (let ph of phases) if (p >= ph.s) return `${ph.t} [${p}%]`;
-                return `SYSTEM READY [${p}%]`;
+
+                for (let phase of phases) {
+                    if (percent >= phase.start) {
+                        return `${phase.text} [${percent}%]`;
+                    }
+                }
+                return `SYSTEM READY [${percent}%]`;
             }
         };
 
         const Utils = {
-            sleep(ms) { return new Promise(r => setTimeout(r, ms)); },
-            easeOutQuad(t) { return t * (2 - t); }
+            sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            },
+            easeOutQuad(t) {
+                return t * (2 - t);
+            }
         };
 
         document.addEventListener('DOMContentLoaded', () => NeuralTutor.init());
