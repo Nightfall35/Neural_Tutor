@@ -699,8 +699,9 @@
         info: "Master Java through practice and project-based learning. Learn object-oriented principles, implement OOP systems, and build real-world applications.",
         plans: [
             {name: "Basic", price: "Free", features: "Intro videos, Basic exercises"},
-            {name: "Advanced", price: "k200/month", features: "All content, Code templates, Project building"},
-            {name: "Premium", price: "k300/month", features: "Mentorship, Live Q&A, Project reviews"}
+            {name: "Advanced", price: "k80/month", features: "All content, Code templates, Project building,quiz-exam-test mockups,recorded debug sessions"},
+            {name: "Premium", price: "k100/month", features: "one on one weekend sessions, Live Q&A,server project and many more,live debugging,java internals,live debugging,Personalized Weakness Map"},
+            {name: "Ultimate", price: "k550/month", features: "Personalized mentorship, Exclusive projects,Debugging & Code Autopsy,Java internals,Exam focused java"}
         ],
         offered: [
             "Object-Oriented Programming principles",
@@ -708,13 +709,12 @@
             "Exception Handling",
             "Multithreading and Concurrency",
             "JDBC and Database Connectivity",
-            "Spring Framework basics",
             "Building REST APIs"
         ],
         mentor: {
-            name: "Rhodwell",
-            bio: "Fourth year Computer Science student at the University of Zambia, specializing in Software Engineering.",
-            image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop"
+            name: "Ishmael D. Tembo",
+            bio: "Fourth year Computer Science student at the University of Zambia, majoring in Systems engineering.",
+            image: "assets/mentor_images/Ishmael.jpeg"
         }
     },
     "discrete-math": {
@@ -735,9 +735,9 @@
             "Discrete Probability"
         ],
         mentor: {
-            name: "Humphrey",
+            name: "Ishmael D.Tembo",
             bio: "Fourth year Computer Science student at the University of Zambia, excelling in Theoretical Computer Science.",
-            image: "https://images.unsplash.com/photo-1557862921-37829c790f19?w=400&h=400&fit=crop"
+            image: "assets/mentor_images/Ishmael.jpeg"
         }
     },
     architecture: {
@@ -759,8 +759,8 @@
         ],
         mentor: {
             name: "Humphrey",
-            bio: "Fourth year Computer Science student at the University of Zambia, specializing in Systems Engineering.",
-            image: "https://images.unsplash.com/photo-1557862921-37829c790f19?w=400&h=400&fit=crop"
+            bio: "Fourth year Computer Science student at the University of Zambia, majoring in Systems Engineering.",
+            image: "assets/mentor_images/Humphrey.jpeg"
         }
     },
     dbms: {
@@ -781,9 +781,9 @@
             "Database Security"
         ],
         mentor: {
-            name: "Ishmael D. Tembo",
-            bio: "Fourth year Computer Science student at the University of Zambia, specializing in Database Systems.",
-            image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=400&fit=crop"
+            name: "Rhodwell",
+            bio: "Fourth year Computer Science student at the University of Zambia, majoring in Systems Engineering.",
+            image: "assets/mentor_images/Humphrey.jpeg"
         }
     },
     os: {
@@ -804,9 +804,9 @@
             "Distributed Operating Systems"
         ],
         mentor: {
-            name: "Rhodwell",
-            bio: "Fourth year Computer Science student at the University of Zambia, specializing in Systems Programming.",
-            image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop"
+            name: "Ishmael D. Tembo",
+            bio: "Fourth year Computer Science student at the University of Zambia, majoring in Systems Engineering.",
+            image: "assets/mentor_images/Ishmael.jpeg"
         }
     },
     "digital-electronics": {
@@ -827,9 +827,9 @@
             "VHDL/Verilog Basics"
         ],
         mentor: {
-            name: "Ishmael D. Tembo",
-            bio: "Fourth year Computer Science student at the University of Zambia, specializing in Hardware Systems.",
-            image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=400&fit=crop"
+            name: "Humphrey",
+            bio: "Fourth year Computer Science student at the University of Zambia, majoring in Systems Engineering.",
+            image: "assets/mentor_images/Humphrey.jpeg"
         }
     },
     algorithms: {
@@ -850,9 +850,9 @@
             "Algorithm Optimization Techniques"
         ],
         mentor: {
-            name: "Humphrey",
-            bio: "Fourth year Computer Science student at the University of Zambia, specializing in Algorithms and Data Structures.",
-            image: "https://images.unsplash.com/photo-1557862921-37829c790f19?w=400&h=400&fit=crop"
+            name: "Ishmael D. Tembo",
+            bio: "Fourth year Computer Science student at the University of Zambia, majoring in computer systems engineering.",
+            image: "assets/mentor_images/Ishmael.jpeg"
         }
     },
     "data-comm": {
@@ -873,7 +873,7 @@
             "Internet Architecture"
         ],
         mentor: {
-            name: "Rhodwell",
+            name: "N/A",
             bio: "Fourth year Computer Science student at the University of Zambia, specializing in Networking and Communications.",
             image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop"
         }
@@ -999,7 +999,9 @@
             async showCourseDetails(topic) {
                 const details = this.courseDetails[topic];
                 if (!details) return;
-
+                this.elements.mentorPhoto.style.display = 'none';
+                this.elements.typingContent.innerHTML ='';
+                this.elements.detailsTerminal.style.display = 'block';
                 // Update course title
                 this.elements.courseTitle.textContent = details.title;
 
