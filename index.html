@@ -65,7 +65,7 @@
             0% { top: -2px; }
             100% { top: 100%; }
         }
-        /* Matrix Rain Effect */
+        /* Matrix Rain Effect (original) */
         .matrix-rain {
             position: fixed;
             top: 0;
@@ -287,12 +287,23 @@
             position: relative;
             overflow: hidden;
         }
+        /* ---- NEW: Glitch Text Effect on Hover ---- */
         .course-list li:hover {
             background: rgba(0, 255, 65, 0.1);
             border-color: rgba(0, 255, 65, 0.3);
             transform: translateX(5px);
             box-shadow: 0 0 10px rgba(0, 255, 65, 0.2);
+            animation: glitch 0.3s infinite;
         }
+        @keyframes glitch {
+            0% { transform: translate(0); text-shadow: -1px 0 red, 1px 0 blue; }
+            20% { transform: translate(-1px, 1px); text-shadow: 1px 0 blue, -1px 0 cyan; }
+            40% { transform: translate(1px, -1px); text-shadow: 1px 0 lime, -1px 0 magenta; }
+            60% { transform: translate(-1px, 1px); text-shadow: -1px 0 yellow, 1px 0 red; }
+            80% { transform: translate(1px, -1px); text-shadow: 1px 0 cyan, -1px 0 lime; }
+            100% { transform: translate(0); text-shadow: none; }
+        }
+        /* ---- END Glitch ---- */
         .course-list li::after {
             content: '>';
             position: absolute;
@@ -507,12 +518,115 @@
                 margin: 0 auto 20px;
             }
         }
+        /* ---- NEW: Hexadecimal Dump Background (subtle) ---- */
+        .hex-dump-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 3;
+            color: #00ff41;
+            font-size: 10px;
+            line-height: 12px;
+            opacity: 0.03;
+            white-space: pre;
+            overflow: hidden;
+            font-family: monospace;
+            user-select: none;
+        }
+        /* ---- NEW: Binary Rain Alternative (in addition to matrix) ---- */
+        .binary-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.15;
+            overflow: hidden;
+        }
+        /* ---- NEW: Scanline effect (enhanced) + Phosphor glow on terminals ---- */
+        .phosphor-glow {
+            position: relative;
+        }
+        .phosphor-glow::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 20px #00ff41, 0 0 30px #00ff41;
+            opacity: 0.3;
+            pointer-events: none;
+            border-radius: inherit;
+            z-index: 5;
+        }
+        /* Additional scanline for details terminal */
+        .details-terminal.scan-effect {
+            background: repeating-linear-gradient(0deg, rgba(0,255,65,0.03) 0px, rgba(0,0,0,0.5) 1px, transparent 2px);
+        }
+        /* ---- NEW: Typing Prompt Container (before course list) ---- */
+        .access-prompt-container {
+            margin-bottom: 15px;
+            background: rgba(0,20,0,0.3);
+            padding: 10px;
+            border: 1px dashed #00ff41;
+            border-radius: 3px;
+        }
+        .access-prompt {
+            color: #0ff;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        .access-input-line {
+            display: flex;
+            align-items: center;
+            color: #0f0;
+        }
+        .access-prompt-symbol {
+            margin-right: 5px;
+            color: #ff0;
+        }
+        .access-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background-color: #0ff;
+            animation: blink 1s infinite;
+            margin-left: 2px;
+        }
+        .unlock-message {
+            color: #ff5555;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+        }
+        .locked-course {
+            pointer-events: none;
+            opacity: 0.5;
+        }
+        .locked-course::before {
+            content: '[LOCKED]';
+            color: #ff5555;
+            font-size: 0.7rem;
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
     <!-- CRT Overlay -->
     <div class="crt-overlay"></div>
     <div class="scan-line"></div>
+
+    <!-- Hexadecimal Dump Background (subtle) -->
+    <div class="hex-dump-bg" id="hexDump"></div>
+
+    <!-- Binary Rain Alternative -->
+    <div class="binary-rain" id="binaryRain"></div>
 
     <!-- Boot Terminal -->
     <div class="boot-terminal" id="bootTerminal">
@@ -545,7 +659,7 @@
         </div>
     </div>
 
-    <!-- Matrix Rain Effect -->
+    <!-- Matrix Rain Effect (original) -->
     <div class="matrix-rain" id="matrixRain"></div>
 
     <!-- Particles -->
@@ -554,21 +668,29 @@
     <!-- Introduction Message -->
     <div class="intro-message" id="introMessage"></div>
 
-    <!-- Course Terminal (Left - Small and Thin) -->
+    <!-- Course Terminal (Left - Small and Thin) with Access Prompt -->
     <div class="course-terminal" id="courseTerminal">
         <h2>COURSES</h2>
-       <ul class="course-list">
-            <li data-topic="java">Java Programming</li>
-            <li data-topic="discrete-math">Discrete Mathematics</li>
-            <li data-topic="architecture">Architecture and Computer Organization</li>
-            <li data-topic="dbms">Database Management Systems</li>
-            <li data-topic="os">Operating Systems</li>
-            <li data-topic="digital-electronics">Digital Electronics</li>
-            <li data-topic="algorithms">Algorithms and Complexity</li>
-            <li data-topic="data-comm">Data Communication</li>
-            <li data-topic="8085-assembly">8085-assembly</li>
-            
-</ul>
+        <!-- TYPING PROMPT BEFORE COURSE LIST -->
+        <div class="access-prompt-container" id="accessPromptContainer">
+            <div class="access-prompt">> ACCESS CODE REQUIRED</div>
+            <div class="access-input-line">
+                <span class="access-prompt-symbol">></span>
+                <span id="typedAccessCommand"></span><span class="access-cursor"></span>
+            </div>
+            <div class="unlock-message" id="unlockMessage">Invalid code. Try 'unlock courses'.</div>
+        </div>
+        <ul class="course-list" id="courseList">
+            <li data-topic="java" class="locked-course">Java Programming</li>
+            <li data-topic="discrete-math" class="locked-course">Discrete Mathematics</li>
+            <li data-topic="architecture" class="locked-course">Architecture and Computer Organization</li>
+            <li data-topic="dbms" class="locked-course">Database Management Systems</li>
+            <li data-topic="os" class="locked-course">Operating Systems</li>
+            <li data-topic="digital-electronics" class="locked-course">Digital Electronics</li>
+            <li data-topic="algorithms" class="locked-course">Algorithms and Complexity</li>
+            <li data-topic="data-comm" class="locked-course">Data Communication</li>
+            <li data-topic="8085-assembly" class="locked-course">8085-assembly</li>
+        </ul>
     </div>
 
     <!-- Details Terminal (Right - Big with Photo) -->
@@ -585,6 +707,129 @@
     </div>
 
     <script>
+        // ==================== NEW FEATURE FUNCTIONS ====================
+
+        // 1. Hexadecimal Memory Dump Background
+        function initHexDump() {
+            const hexEl = document.getElementById('hexDump');
+            if (!hexEl) return;
+            let dump = '';
+            for (let i = 0; i < 2000; i++) {
+                dump += (Math.floor(Math.random()*16).toString(16) + Math.floor(Math.random()*16).toString(16) + ' ');
+                if (i % 16 === 15) dump += '\n';
+            }
+            hexEl.textContent = dump;
+        }
+
+        // 2. Binary Rain Alternative
+        function initBinaryRain() {
+            const rainEl = document.getElementById('binaryRain');
+            if (!rainEl) return;
+            const cols = Math.floor(window.innerWidth / 20);
+            for (let i = 0; i < cols; i++) {
+                const col = document.createElement('div');
+                col.style.position = 'absolute';
+                col.style.left = i * 20 + 'px';
+                col.style.top = '-100px';
+                col.style.color = '#0f0';
+                col.style.fontSize = '14px';
+                col.style.fontFamily = 'monospace';
+                col.style.whiteSpace = 'pre';
+                col.style.opacity = 0.2 + Math.random() * 0.3;
+                col.textContent = Array(20).fill(0).map(() => Math.round(Math.random())).join('');
+                rainEl.appendChild(col);
+                animateBinaryColumn(col);
+            }
+        }
+        function animateBinaryColumn(col) {
+            let pos = -100;
+            const speed = 1 + Math.random() * 2;
+            function fall() {
+                pos += speed;
+                if (pos > window.innerHeight) pos = -100;
+                col.style.top = pos + 'px';
+                // occasionally flip bits
+                if (Math.random() < 0.01) {
+                    col.textContent = Array(20).fill(0).map(() => Math.round(Math.random())).join('');
+                }
+                requestAnimationFrame(fall);
+            }
+            fall();
+        }
+
+        // 3. Network Traffic Simulation (periodic packets in console)
+        function startNetworkTraffic() {
+            setInterval(() => {
+                if (document.hidden) return;
+                const packet = `[NET] ${String.fromCharCode(65+Math.floor(Math.random()*26))}${Math.floor(Math.random()*1000)} > ${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}:${Math.floor(Math.random()*65535)} ${Math.random() > 0.5 ? 'SYN' : 'ACK'}`;
+                console.log(`%c${packet}`, 'color: #0ff; font-size: 10px;');
+            }, 3000);
+        }
+
+        // 4. Typing Prompt & Access Codes (unlock courses)
+        let accessBuffer = '';
+        const accessTarget = 'unlock courses';
+        let accessIndex = 0;
+        let accessUnlocked = false;
+        function initAccessPrompt() {
+            const accessSpan = document.getElementById('typedAccessCommand');
+            const unlockMsg = document.getElementById('unlockMessage');
+            if (!accessSpan) return;
+
+            window.addEventListener('keydown', (e) => {
+                if (accessUnlocked) return;
+                if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+                    accessBuffer += e.key;
+                    if (accessBuffer.length > accessTarget.length) {
+                        accessBuffer = accessBuffer.slice(-accessTarget.length);
+                    }
+                    accessSpan.textContent = accessBuffer;
+                    // play typing sound (reuse)
+                    NeuralTutor.playTypingSound();
+
+                    if (accessBuffer === accessTarget) {
+                        accessUnlocked = true;
+                        unlockMsg.style.display = 'none';
+                        document.querySelectorAll('.course-list li').forEach(li => {
+                            li.classList.remove('locked-course');
+                        });
+                        // show success message briefly
+                        unlockMsg.textContent = 'Access granted. Courses unlocked.';
+                        unlockMsg.style.color = '#0f0';
+                        unlockMsg.style.display = 'block';
+                        setTimeout(() => { unlockMsg.style.display = 'none'; }, 2000);
+                    } else {
+                        // check if wrong
+                        if (!accessTarget.startsWith(accessBuffer)) {
+                            unlockMsg.style.display = 'block';
+                            unlockMsg.style.color = '#ff5555';
+                            unlockMsg.textContent = 'Invalid code. Try again.';
+                            accessBuffer = '';
+                            accessSpan.textContent = '';
+                        } else {
+                            unlockMsg.style.display = 'none';
+                        }
+                    }
+                } else if (e.key === 'Backspace') {
+                    accessBuffer = accessBuffer.slice(0, -1);
+                    accessSpan.textContent = accessBuffer;
+                }
+            });
+        }
+
+        // 5. Phosphor Glow & Scanline effect to terminals (apply after boot)
+        function applyPhosphorAndScanline() {
+            const details = document.getElementById('detailsTerminal');
+            const course = document.getElementById('courseTerminal');
+            if (details) {
+                details.classList.add('phosphor-glow');
+                details.classList.add('scan-effect');
+            }
+            if (course) {
+                course.classList.add('phosphor-glow');
+            }
+        }
+
         const Effects = {
             createMatrixRain() {
                 const container = document.getElementById('matrixRain');
@@ -673,27 +918,25 @@
 
         const NeuralTutor = {
             elements: {},
-            bootSequence: [
-                {text: "> Initializing Quantum Neural Tutor v3.0...", delay: 800, color: "#0ff"},
-                {text: "> Loading computer processors... [██████████] 100%", delay: 600, color: "#f0f"},
-                {text: "> Calibrating neural interface...", delay: 700, color: "#0ff"},
-                {text: "> Establishing quantum entanglement...", delay: 900, color: "#0f0"},
-                {text: "> Scanning cognitive patterns...", delay: 600, color: "#0ff"},
-                {text: "> Decrypting knowledge matrix...", delay: 800, color: "#ff0"},
-                {text: "> Synchronizing mentor network...", delay: 700, color: "#0ff"},
-                {text: "> Optimizing learning algorithms...", delay: 900, color: "#f0f"},
-                {text: "> System integrity: [██████████] 100%", delay: 600, color: "#0f0"},
-                {text: "> Quantum neural bridge: ACTIVE", delay: 800, color: "#0ff"},
-                {text: "> Welcome to the singularity.", delay: 1200, color: "#ff0"}
-            ],
+           bootSequence: [
+    {text: "> [INIT] Bootstrapping kernel modules...", delay: 600, color: "#0ff"},
+    {text: "> [CRYPT] Generating 4096-bit RSA keypair... OK", delay: 700, color: "#0f0"},
+    {text: "> [NET] Establishing TOR circuit... 3 hops verified", delay: 800, color: "#f0f"},
+    {text: "> [MEM] Allocating secure memory: 0x7FFF5FBFF000", delay: 600, color: "#ff0"},
+    {text: "> [PROC] Spawning daemon processes... [████████] 8/8", delay: 700, color: "#0ff"},
+    {text: "> [DB] Syncing encrypted knowledge vault...", delay: 800, color: "#0f0"},
+    {text: "> [AI] Loading neural network weights... 47.2GB", delay: 900, color: "#f0f"},
+    {text: "> [SEC] Running integrity checks: PASSED", delay: 600, color: "#0f0"},
+    {text: "> [AUTH] Biometric scan: AUTHORIZED", delay: 700, color: "#0ff"},
+    {text: "> [SYS] All systems nominal. Welcome, operative.", delay: 1000, color: "#00ff41"},
+    {text: "> ACCESS GRANTED. Entering the Matrix...", delay: 1200, color: "#ff0"}
+],
+
             introLines: [
                 "This space is for students who want clarity, not confusion.",
                 "I’m Cypher, and my goal is simple: help you actually understand",
-                
-
-
+                "what your lectures rushed through.",
                 "It is the glory of God to conceal a matter; to search out a matter is the glory of kings.--proverbs 25:2"
-
             ],
             courseDetails: {
     java: {
@@ -826,6 +1069,7 @@
             "Counters and Registers",
             "Memory Devices",
             "Digital Integrated Circuits",
+            "VHDL/Verilog Basics"
         ],
         mentor: {
             name: "Humphrey",
@@ -907,6 +1151,11 @@
                 this.setupEventListeners();
                 Effects.createMatrixRain();
                 Effects.createParticles();
+                // Initialize new features
+                initHexDump();
+                initBinaryRain();
+                startNetworkTraffic();
+                initAccessPrompt();
                 setTimeout(() => this.startBootSequence(), 500);
             },
             cacheElements() {
@@ -930,11 +1179,11 @@
                         location.reload();
                     }
                 });
-                // Course selection
+                // Course selection (only when unlocked)
                 const courseList = document.querySelector('.course-list');
                 if (courseList) {
                     courseList.addEventListener('click', (e) => {
-                        if (e.target.tagName === 'LI') {
+                        if (e.target.tagName === 'LI' && !e.target.classList.contains('locked-course')) {
                             const topic = e.target.dataset.topic;
                             this.showCourseDetails(topic);
                         }
@@ -1255,6 +1504,9 @@
                 // Draw left terminal (small and thin)
                 this.elements.courseTerminal.style.opacity = 1;
                 this.elements.courseTerminal.style.transform = 'scale(1)';
+
+                // Apply phosphor glow and scanline
+                applyPhosphorAndScanline();
             },
             getLoadingText(percent) {
                 const phases = [
