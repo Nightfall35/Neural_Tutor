@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>[CLASSIFIED] NEURAL_ARCHIVE_v4.2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ── BASE ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Courier New', 'Consolas', 'JetBrains Mono', monospace;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #000;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,0,0.03) 2px, rgba(0,255,0,0.03) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,255,0,0.03) 2px, rgba(0,255,0,0.03) 4px),
+                radial-gradient(circle at 20% 30%, rgba(0,50,0,0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0,30,0,0.2) 0%, transparent 50%);
+            color: #00ff41;
+            /* allow body to scroll on mobile; archive-container handles its own scroll */
+            overflow-x: hidden;
+            overflow-y: hidden;
+            height: 100dvh;
+            width: 100vw;
+            position: relative;
+        }
+
+        /* ── CRT ── */
+        .crt-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background:
+                linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%),
+                linear-gradient(90deg, rgba(255,0,0,0.06), rgba(0,255,0,0.02), rgba(0,0,255,0.06));
+            background-size: 100% 2px, 3px 100%;
+            z-index: 10000; pointer-events: none;
+            animation: flicker 0.15s infinite;
+        }
+        @keyframes flicker {
+            0%{opacity:.28} 15%{opacity:.91} 30%{opacity:.66} 50%{opacity:.96}
+            55%{opacity:.09} 75%{opacity:.37} 90%{opacity:.70} 100%{opacity:.24}
+        }
+        .scan-line {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0,255,0,0.05) 0px, rgba(0,255,0,0.05) 1px, transparent 1px, transparent 2px);
+            z-index: 9999; pointer-events: none; opacity: 0.3;
+        }
+        .data-stream {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1; opacity: 0.04; overflow: hidden;
+            font-size: 10px; line-height: 12px; color: #00ff41;
+        }
+
+        /* ── BOOT ── */
+        .boot-terminal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 1000; overflow: hidden;
+            padding: clamp(16px, 4vw, 40px);
+            font-size: clamp(0.7rem, 2.5vw, 1rem);
+            line-height: 1.6; transition: opacity 1s ease-in-out;
+        }
+        .terminal-line {
+            margin-bottom: 0.5rem; opacity: 0;
+            text-shadow: 0 0 8px currentColor;
+            min-height: 1.4rem; display: block; font-weight: 300;
+            /* prevent boot text overflowing on narrow screens */
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
+        .prompt { color: #00ff41; margin-right: 6px; text-shadow: 0 0 5px #00ff41; }
+        .user  { color: #0ff; font-weight: bold; }
+        .host  { color: #f0f; font-weight: bold; }
+        .path  { color: #ff0; }
+        .command { color: #0f0; }
+        .cursor {
+            display: inline-block; width: 10px; height: 1.2rem;
+            background: #00ff41; animation: blink .8s infinite;
+            margin-left: 2px; vertical-align: middle;
+            box-shadow: 0 0 10px #00ff41;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+        /* ── TRANSITION ── */
+        .transition-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 900; pointer-events: none; opacity: 0; background: #000;
+        }
+        .transition-loading {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            z-index: 950;
+            width: min(90vw, 560px);
+            padding: 0 20px;
+            opacity: 0;
+        }
+        .loading-text {
+            color: #00ff41; text-align: center; margin-bottom: 24px;
+            font-size: clamp(0.8rem, 3vw, 1.2rem);
+            text-shadow: 0 0 20px #00ff41; letter-spacing: 3px; font-weight: 300;
+        }
+        .loading-bar {
+            width: 100%; height: 3px; background: rgba(0,255,65,0.1);
+            overflow: hidden; box-shadow: 0 0 20px rgba(0,255,65,0.3);
+        }
+        .loading-progress {
+            width: 0%; height: 100%; background: #00ff41;
+            box-shadow: 0 0 20px #00ff41; transition: width .3s ease-out;
+        }
+
+        /* ── INTRO ── */
+        .intro-message {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%,-50%);
+            width: 92%; max-width: 860px;
+            font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+            line-height: 1.9; color: #00ff41;
+            text-shadow: 0 0 15px rgba(0,255,65,0.6);
+            z-index: 1100; opacity: 0; pointer-events: none;
+            text-align: left;
+            padding: clamp(20px, 5vw, 40px);
+            border: 1px solid rgba(0,255,65,0.3);
+            background: rgba(0,0,0,0.92);
+            max-height: 90dvh;
+            overflow-y: auto;
+        }
+        .intro-line { opacity:0; display:block; margin-bottom:14px; }
+
+        /* ── ARCHIVE CONTAINER ── */
+        .archive-container {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100dvh;
+            z-index: 100; opacity: 0;
+            display: grid;
+            /* Desktop: sidebar + content */
+            grid-template-columns: 340px 1fr;
+            grid-template-rows: 52px 1fr 36px;
+            transition: opacity .6s;
+        }
+
+        /* ── HEADER ── */
+        .header-bar {
+            grid-column: 1 / -1;
+            background: rgba(0,0,0,0.95);
+            border-bottom: 2px solid #00ff41;
+            padding: 0 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 2px 20px rgba(0,255,65,0.3);
+            gap: 12px;
+            overflow: hidden;
+        }
+        .header-title {
+            font-size: clamp(0.65rem, 2vw, 1rem);
+            letter-spacing: 2px; color: #0ff;
+            text-shadow: 0 0 10px #0ff; font-weight: 300;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .header-status {
+            display: flex; gap: 16px;
+            font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+            color: #00ff41; flex-shrink: 0;
+        }
+        .status-item { display: flex; align-items: center; gap: 6px; }
+        .status-dot {
+            width: 7px; height: 7px; background: #00ff41;
+            border-radius: 50%; animation: pulse 2s infinite;
+            box-shadow: 0 0 8px #00ff41; flex-shrink: 0;
+        }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+        /* Hide timestamp on small screens */
+        .status-time { display: none; }
+
+        /* ── MOBILE TAB BAR (hidden on desktop) ── */
+        .mobile-tabs {
+            display: none;
+            grid-column: 1 / -1;
+            background: rgba(0,0,0,0.97);
+            border-bottom: 1px solid rgba(0,255,65,0.3);
+            height: 44px;
+        }
+        .mobile-tab-btn {
+            flex: 1; height: 100%;
+            background: none; border: none; border-bottom: 3px solid transparent;
+            color: rgba(0,255,65,0.5); font-family: inherit;
+            font-size: 0.75rem; letter-spacing: 1px;
+            cursor: pointer; transition: all .2s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .mobile-tab-btn.active {
+            color: #00ff41; border-bottom-color: #00ff41;
+            text-shadow: 0 0 8px #00ff41;
+            background: rgba(0,255,65,0.05);
+        }
+
+        /* ── SIDEBAR ── */
+        .sidebar {
+            grid-column: 1; grid-row: 2;
+            background: rgba(0,0,0,0.9);
+            border-right: 2px solid rgba(0,255,65,0.3);
+            overflow-y: auto; overflow-x: hidden;
+            padding: 20px;
+            box-shadow: 2px 0 30px rgba(0,255,65,0.15);
+        }
+        .sidebar::-webkit-scrollbar { width: 5px; }
+        .sidebar::-webkit-scrollbar-track { background: rgba(0,255,65,0.05); }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(0,255,65,0.3); border-radius: 3px; }
+
+        .sidebar-section { margin-bottom: 28px; }
+        .section-header {
+            color: #ff0; font-size: 0.72rem; letter-spacing: 2px;
+            margin-bottom: 14px; padding-bottom: 7px;
+            border-bottom: 1px solid rgba(255,255,0,0.3);
+            text-shadow: 0 0 5px #ff0;
+        }
+
+        /* ── ACCESS GATE ── */
+        .access-gate {
+            background: rgba(0,20,0,0.5); border: 1px dashed #00ff41;
+            padding: 14px; margin-bottom: 18px; border-radius: 3px;
+        }
+        .access-prompt { color: #0ff; font-size: 0.82rem; margin-bottom: 9px; letter-spacing: 1px; }
+        .access-input-line {
+            display: flex; align-items: center; color: #0f0; font-size: 0.9rem;
+            background: rgba(0,0,0,0.5); padding: 8px;
+            border-left: 3px solid #0f0;
+        }
+        .access-prompt-symbol { margin-right: 8px; color: #ff0; text-shadow: 0 0 5px #ff0; font-weight: bold; }
+        .access-cursor {
+            display: inline-block; width: 8px; height: 16px;
+            background: #0ff; animation: blink .8s infinite;
+            margin-left: 3px; box-shadow: 0 0 10px #0ff;
+        }
+        .unlock-message { color: #f00; font-size: 0.78rem; margin-top: 7px; display: none; text-shadow: 0 0 5px #f00; }
+
+        /* ── MOBILE UNLOCK BUTTON ── */
+        .unlock-btn {
+            display: none;
+            width: 100%; margin-top: 10px; padding: 12px;
+            background: rgba(0,255,65,0.1); border: 1px solid #00ff41;
+            color: #00ff41; font-family: inherit; font-size: 0.85rem;
+            letter-spacing: 1px; cursor: pointer; border-radius: 3px;
+            text-shadow: 0 0 5px #00ff41;
+            transition: all .2s;
+        }
+        .unlock-btn:active { background: rgba(0,255,65,0.25); }
+
+        /* ── FILE LIST ── */
+        .file-list { list-style: none; }
+        .file-item {
+            padding: 12px 10px;
+            margin-bottom: 4px; cursor: pointer;
+            transition: all .2s; position: relative;
+            font-size: 0.88rem; border-left: 3px solid transparent;
+            background: rgba(0,255,65,0.02);
+            /* big enough touch target */
+            min-height: 44px; display: flex; align-items: center;
+        }
+        .file-item:active,
+        .file-item:hover {
+            background: rgba(0,255,65,0.12);
+            border-left-color: #00ff41;
+            box-shadow: 0 0 12px rgba(0,255,65,0.2);
+        }
+        .file-icon { margin-right: 10px; font-size: 0.85rem; flex-shrink: 0; }
+        .file-item.locked { opacity: .4; pointer-events: none; filter: grayscale(1); }
+        .file-item.active-file {
+            background: rgba(0,255,65,0.15);
+            border-left-color: #0ff;
+            color: #0ff;
+        }
+
+        /* ── CONTENT AREA ── */
+        .content-area {
+            grid-column: 2; grid-row: 2;
+            background: rgba(0,0,0,0.85);
+            overflow-y: auto; overflow-x: hidden;
+            padding: clamp(20px, 4vw, 40px);
+            display: none; opacity: 0;
+        }
+        .content-area.active { display: block; }
+        .content-area.glitch-in { animation: contentGlitch .7s ease-out forwards; }
+        @keyframes contentGlitch {
+            0%   { opacity:0; transform:scale(.92) translateX(-20px); filter:blur(3px); }
+            15%  { opacity:1; transform:scale(1.01) translateX(4px);  filter:blur(0); }
+            40%  { transform:scale(.99) translateX(-2px); }
+            100% { opacity:1; transform:scale(1) translateX(0); filter:blur(0); }
+        }
+        .content-area::-webkit-scrollbar { width: 6px; }
+        .content-area::-webkit-scrollbar-track { background: rgba(0,255,65,0.05); }
+        .content-area::-webkit-scrollbar-thumb { background: rgba(0,255,65,0.3); border-radius: 4px; }
+
+        /* Back button (mobile only) */
+        .back-btn {
+            display: none;
+            align-items: center; gap: 8px;
+            background: none; border: 1px solid rgba(0,255,65,0.4);
+            color: #00ff41; font-family: inherit; font-size: 0.8rem;
+            padding: 8px 14px; cursor: pointer; margin-bottom: 20px;
+            letter-spacing: 1px; transition: all .2s;
+        }
+        .back-btn:active { background: rgba(0,255,65,0.1); }
+
+        .content-header {
+            margin-bottom: 32px; padding-bottom: 18px;
+            border-bottom: 2px solid rgba(0,255,65,0.3);
+        }
+        .content-title {
+            font-size: clamp(1.2rem, 4vw, 2rem);
+            color: #0ff; text-shadow: 0 0 20px rgba(0,255,255,0.6);
+            letter-spacing: 2px; margin-bottom: 8px; font-weight: 300;
+            word-break: break-word;
+        }
+        .content-meta { font-size: 0.82rem; color: #00ff41; opacity: .7; letter-spacing: 1px; }
+
+        .data-block {
+            margin-bottom: 32px; padding: clamp(16px, 4vw, 25px);
+            background: rgba(0,20,0,0.3); border-left: 4px solid #00ff41;
+            position: relative;
+        }
+        .data-block::before {
+            content: attr(data-label);
+            position: absolute; top: -10px; left: 16px;
+            background: #000; padding: 0 8px;
+            font-size: 0.65rem; color: #ff0; letter-spacing: 2px;
+            text-shadow: 0 0 5px #ff0;
+        }
+        .data-block h3 {
+            color: #0ff; font-size: clamp(1rem, 3vw, 1.3rem);
+            margin-bottom: 16px; text-shadow: 0 0 10px #0ff;
+            font-weight: 300; letter-spacing: 1px;
+        }
+        .data-block p { line-height: 1.8; color: #d3d3d3; margin-bottom: 12px; }
+        .data-block ul { list-style: none; padding-left: 10px; }
+        .data-block li {
+            margin-bottom: 10px; padding-left: 22px;
+            position: relative; line-height: 1.6;
+        }
+        .data-block li::before {
+            content: '▸'; position: absolute; left: 0;
+            color: #00ff41; text-shadow: 0 0 5px #00ff41;
+        }
+
+        /* ── PACKAGES ── */
+        .package-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+            gap: 16px; margin-top: 20px;
+        }
+        .package {
+            background: rgba(0,30,0,0.4); border: 1px solid rgba(0,255,65,0.4);
+            padding: clamp(16px, 3vw, 25px);
+            transition: all .3s; position: relative; overflow: hidden;
+        }
+        .package:active, .package:hover {
+            box-shadow: 0 4px 24px rgba(0,255,65,0.35);
+            border-color: #00ff41;
+        }
+        .package-name { color: #ff0; font-size: 1.1rem; margin-bottom: 12px; text-shadow: 0 0 8px #ff0; letter-spacing: 1px; font-weight: 300; }
+        .package-price { color: #00ff41; font-size: 1.3rem; margin: 12px 0; text-shadow: 0 0 10px #00ff41; font-weight: bold; }
+        .package-desc { color: #b3b3b3; font-size: 0.88rem; line-height: 1.6; }
+
+        /* ── FOOTER ── */
+        .footer-bar {
+            grid-column: 1 / -1;
+            background: rgba(0,0,0,0.95);
+            border-top: 1px solid rgba(0,255,65,0.3);
+            padding: 0 16px;
+            display: flex; align-items: center; justify-content: space-between;
+            font-size: clamp(0.55rem, 1.5vw, 0.72rem);
+            color: #00ff41; opacity: .7; gap: 10px; overflow: hidden;
+        }
+        .footer-right { display: none; }
+
+        /* ══════════════════════════════════════════
+           MOBILE  ≤ 768px
+        ══════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            body { overflow: hidden; }
+
+            /* Switch to single-column stacked layout with tab control */
+            .archive-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: 52px 44px 1fr 36px;
+            }
+
+            /* Show tab bar */
+            .mobile-tabs {
+                display: flex;
+                grid-column: 1; grid-row: 2;
+            }
+
+            /* Sidebar occupies row 3, hidden unless tab=files */
+            .sidebar {
+                grid-column: 1; grid-row: 3;
+                border-right: none;
+                border-top: 1px solid rgba(0,255,65,0.2);
+                display: none;
+            }
+            .sidebar.tab-active { display: block; }
+
+            /* Content area also occupies row 3, hidden unless tab=content */
+            .content-area {
+                grid-column: 1; grid-row: 3;
+                padding: 18px 16px;
+                display: none !important;
+            }
+            .content-area.tab-active { display: block !important; }
+
+            /* Show back button inside content on mobile */
+            .back-btn { display: flex; }
+
+            /* Show mobile unlock button */
+            .unlock-btn { display: block; }
+
+            /* Hide keyboard-only access prompt text on mobile */
+            .access-prompt { font-size: 0.78rem; }
+            .access-input-line { display: none; }
+
+            /* Header: abbreviate */
+            .header-title { font-size: 0.7rem; letter-spacing: 1px; }
+            .status-time  { display: none !important; }
+
+            /* Larger touch targets for file items */
+            .file-item { padding: 14px 10px; font-size: 0.95rem; }
+
+            .footer-bar { padding: 0 12px; }
+            .footer-right { display: none; }
+        }
+
+        /* ══════════════════════════════════════════
+           VERY SMALL  ≤ 380px
+        ══════════════════════════════════════════ */
+        @media (max-width: 380px) {
+            .boot-terminal { padding: 14px; font-size: 0.68rem; }
+            .header-title { font-size: 0.62rem; }
+            .mobile-tab-btn { font-size: 0.68rem; }
+            .content-title { font-size: 1.1rem; }
+        }
+
+        /* ══════════════════════════════════════════
+           DESKTOP  > 768px  (restore original layout)
+        ══════════════════════════════════════════ */
+        @media (min-width: 769px) {
+            .mobile-tabs { display: none; }
+            .sidebar { display: block !important; }
+            .content-area.active { display: block !important; }
+            .back-btn  { display: none !important; }
+            .unlock-btn { display: none !important; }
+            .access-input-line { display: flex; }
+            .status-time { display: flex; }
+            .footer-right { display: block; }
+        }
+    </style>
+</head>
+<body>
+    <!-- CRT Effects -->
+    <div class="crt-overlay"></div>
+    <div class="scan-line"></div>
+    <div class="data-stream" id="dataStream"></div>
+
+    <!-- Boot Sequence -->
+    <div class="boot-terminal" id="bootTerminal">
+        <div class="terminal-line" id="line1">
+            <span class="prompt"><span class="user">root</span>@<span class="host">ARCHIVE-NODE-7</span>:<span class="path">/classified</span>$</span>
+            <span class="command">./decrypt --deep-scan --bypass-auth</span>
+            <span class="cursor"></span>
+        </div>
+        <div class="terminal-line" id="line2"></div>
+        <div class="terminal-line" id="line3"></div>
+        <div class="terminal-line" id="line4"></div>
+        <div class="terminal-line" id="line5"></div>
+        <div class="terminal-line" id="line6"></div>
+        <div class="terminal-line" id="line7"></div>
+        <div class="terminal-line" id="line8"></div>
+        <div class="terminal-line" id="line9"></div>
+        <div class="terminal-line" id="line10"></div>
+        <div class="terminal-line" id="line11"></div>
+        <div class="terminal-line" id="line12"></div>
+    </div>
+
+    <!-- Transition -->
+    <div class="transition-overlay" id="transitionOverlay"></div>
+    <div class="transition-loading" id="transitionLoading">
+        <div class="loading-text" id="loadingText">DECRYPTING ARCHIVE</div>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+    </div>
+    <div class="intro-message" id="introMessage"></div>
+
+    <!-- Main Archive Interface -->
+    <div class="archive-container" id="archiveContainer">
+        <!-- Header -->
+        <div class="header-bar">
+            <div class="header-title">[NEURAL ARCHIVE] // KNOWLEDGE VAULT v4.2</div>
+            <div class="header-status">
+                <div class="status-item">
+                    <div class="status-dot"></div>
+                    <span>ACTIVE</span>
+                </div>
+                <div class="status-item status-time">
+                    <span>NODE: ZM-LSK-001</span>
+                </div>
+                <div class="status-item status-time">
+                    <span id="timestamp"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Tab Bar -->
+        <div class="mobile-tabs" id="mobileTabs">
+            <button class="mobile-tab-btn active" id="tabFiles" onclick="switchTab('files')">
+                📁 &nbsp;FILES
+            </button>
+            <button class="mobile-tab-btn" id="tabContent" onclick="switchTab('content')">
+                📄 &nbsp;CONTENT
+            </button>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar tab-active" id="sidebar">
+            <div class="sidebar-section">
+                <div class="section-header">[ ACCESS CONTROL ]</div>
+                <div class="access-gate" id="accessGate">
+                    <div class="access-prompt">&gt;&gt; AUTHENTICATION REQUIRED</div>
+                    <div class="access-input-line">
+                        <span class="access-prompt-symbol">$</span>
+                        <span id="typedAccessCommand"></span><span class="access-cursor"></span>
+                    </div>
+                    <div class="unlock-message" id="unlockMessage">ACCESS DENIED</div>
+                    <button class="unlock-btn" id="unlockBtn" onclick="mobileUnlock()">
+                        [ TAP TO AUTHENTICATE ]
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="section-header">[ KNOWLEDGE FILES ]</div>
+                <ul class="file-list" id="fileList">
+                    <li class="file-item locked" data-topic="java">
+                        <span class="file-icon">🔒</span>
+                        <span>java_core.dat</span>
+                    </li>
+                    <li class="file-item locked" data-topic="discrete-math">
+                        <span class="file-icon">🔒</span>
+                        <span>discrete_math.dat</span>
+                    </li>
+                    <li class="file-item locked" data-topic="architecture">
+                        <span class="file-icon">🔒</span>
+                        <span>comp_arch.dat</span>
+                    </li>
+                    <li class="file-item locked" data-topic="dbms">
+                        <span class="file-icon">🔒</span>
+                        <span>database_sys.dat</span>
+                    </li>
+                    <li class="file-item locked" data-topic="os">
+                        <span class="file-icon">🔒</span>
+                        <span>operating_sys.dat</span>
+                    </li>
+                    <li class="file-item locked" data-topic="digital-electronics">
+                        <span class="file-icon">🔒</span>
+                        <span>digital_elec.dat</span>
+                    </li>
+                    <li class="file-item locked" data-topic="algorithms">
+                        <span class="file-icon">🔒</span>
+                        <span>algorithms.dat</span>
+                    </li>
+                    <li class="file-item locked" data-topic="data-comm">
+                        <span class="file-icon">🔒</span>
+                        <span>data_comm.dat</span>
+                    </li>
+                    <li class="file-item locked" data-topic="8085-assembly">
+                        <span class="file-icon">🔒</span>
+                        <span>8085_asm.dat</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area" id="contentArea">
+            <button class="back-btn" id="backBtn" onclick="switchTab('files')">
+                ◀ BACK TO FILES
+            </button>
+            <div class="content-header">
+                <div class="content-title" id="contentTitle">SELECT FILE TO DECRYPT</div>
+                <div class="content-meta" id="contentMeta">// awaiting selection</div>
+            </div>
+            <div id="contentBody"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-bar">
+            <div>CYPHER // NEURAL TUTOR NETWORK</div>
+            <div class="footer-right">Proverbs 25:2 — "It is the glory of God to conceal a matter; to search out a matter is the glory of kings."</div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize timestamp
+        function updateTimestamp() {
+            const now = new Date();
+            const timestamp = now.toISOString().replace('T', ' ').substring(0, 19);
+            const el = document.getElementById('timestamp');
+            if (el) el.textContent = timestamp;
+        }
+        setInterval(updateTimestamp, 1000);
+        updateTimestamp();
+
+        // ── MOBILE TAB SWITCHING ──
+        function switchTab(tab) {
+            const sidebar     = document.getElementById('sidebar');
+            const contentArea = document.getElementById('contentArea');
+            const tabFiles    = document.getElementById('tabFiles');
+            const tabContent  = document.getElementById('tabContent');
+            if (!sidebar || !contentArea) return;
+
+            if (tab === 'files') {
+                sidebar.classList.add('tab-active');
+                contentArea.classList.remove('tab-active');
+                if (tabFiles)   tabFiles.classList.add('active');
+                if (tabContent) tabContent.classList.remove('active');
+            } else {
+                sidebar.classList.remove('tab-active');
+                contentArea.classList.add('tab-active');
+                if (tabContent) tabContent.classList.add('active');
+                if (tabFiles)   tabFiles.classList.remove('active');
+            }
+        }
+
+        // ── MOBILE UNLOCK BUTTON ──
+        function mobileUnlock() {
+            // Simulate typing the unlock code
+            const target = 'unlock courses';
+            let i = 0;
+            const btn = document.getElementById('unlockBtn');
+            if (btn) btn.style.opacity = '0.5';
+            const interval = setInterval(() => {
+                if (i < target.length) {
+                    // Directly fire the unlock logic character by character
+                    const e = new KeyboardEvent('keydown', { key: target[i], bubbles: true });
+                    window.dispatchEvent(e);
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    if (btn) btn.style.opacity = '1';
+                }
+            }, 50);
+        }
+
+        // Data stream background
+        function initDataStream() {
+            const stream = document.getElementById('dataStream');
+            if (!stream) return;
+            let data = '';
+            const chars = '01';
+            for (let i = 0; i < 5000; i++) {
+                data += chars[Math.floor(Math.random() * chars.length)];
+                if (i % 80 === 79) data += '\n';
+            }
+            stream.textContent = data;
+            
+            setInterval(() => {
+                let newData = '';
+                for (let i = 0; i < 5000; i++) {
+                    newData += chars[Math.floor(Math.random() * chars.length)];
+                    if (i % 80 === 79) newData += '\n';
+                }
+                stream.textContent = newData;
+            }, 3000);
+        }
+
+        // Access code system
+        let accessBuffer = '';
+        const accessTarget = 'unlock courses';
+        let accessUnlocked = false;
+        
+        function initAccessPrompt() {
+            const accessSpan = document.getElementById('typedAccessCommand');
+            const unlockMsg = document.getElementById('unlockMessage');
+            if (!accessSpan) return;
+            
+            window.addEventListener('keydown', (e) => {
+                if (accessUnlocked) return;
+                if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+                    accessBuffer += e.key;
+                    if (accessBuffer.length > accessTarget.length) {
+                        accessBuffer = accessBuffer.slice(-accessTarget.length);
+                    }
+                    accessSpan.textContent = accessBuffer;
+                    Archive.playTypingSound();
+                    
+                    if (accessBuffer === accessTarget) {
+                        accessUnlocked = true;
+                        unlockMsg.style.display = 'none';
+                        document.querySelectorAll('.file-item').forEach(item => {
+                            item.classList.remove('locked');
+                            item.querySelector('.file-icon').textContent = '📁';
+                        });
+                        unlockMsg.textContent = '✓ ACCESS GRANTED';
+                        unlockMsg.style.color = '#0f0';
+                        unlockMsg.style.display = 'block';
+                        setTimeout(() => { 
+                            document.getElementById('accessGate').style.display = 'none';
+                        }, 2000);
+                    } else {
+                        if (!accessTarget.startsWith(accessBuffer)) {
+                            unlockMsg.style.display = 'block';
+                            unlockMsg.style.color = '#f00';
+                            unlockMsg.textContent = '✗ ACCESS DENIED';
+                            accessBuffer = '';
+                            accessSpan.textContent = '';
+                        } else {
+                            unlockMsg.style.display = 'none';
+                        }
+                    }
+                } else if (e.key === 'Backspace') {
+                    accessBuffer = accessBuffer.slice(0, -1);
+                    accessSpan.textContent = accessBuffer;
+                }
+            });
+        }
+
+        const Archive = {
+            elements: {},
+            bootSequence: [
+                {text: "> [INIT] Bypassing firewall protocols...", delay: 500, color: "#0ff"},
+                {text: "> [CRYPT] Cracking 4096-bit encryption... SUCCESS", delay: 600, color: "#0f0"},
+                {text: "> [NET] Establishing anonymous relay... TOR ACTIVE", delay: 700, color: "#f0f"},
+                {text: "> [MEM] Dumping memory sectors: 0xDEADBEEF", delay: 500, color: "#ff0"},
+                {text: "> [PROC] Injecting payload... [████████] COMPLETE", delay: 600, color: "#0ff"},
+                {text: "> [DB] Syncing knowledge vault... ENCRYPTED", delay: 700, color: "#0f0"},
+                {text: "> [AI] Loading neural patterns... 47.2GB EXTRACTED", delay: 800, color: "#f0f"},
+                {text: "> [SEC] Disabling security layers... BYPASSED", delay: 500, color: "#0f0"},
+                {text: "> [AUTH] Spoofing credentials... AUTHENTICATED", delay: 600, color: "#0ff"},
+                {text: "> [SYS] All systems compromised. Access granted.", delay: 900, color: "#00ff41"},
+                {text: "> [ARCHIVE] Entering knowledge vault...", delay: 1000, color: "#0f0"}
+            ],
+            introLines: [
+                "// CLASSIFIED ARCHIVE ACCESS",
+                "",
+                "You've found the rabbit hole.",
+                "This isn't your professor's sanitized curriculum.",
+                "This is raw knowledge, unfiltered, obsessively curated.",
+                "",
+                "I'm Cypher. I don't do hand-holding.",
+                "I do deep dives. Real understanding. No shortcuts.",
+                "",
+                "The lectures failed you. This won't.",
+                "",
+                "\"It is the glory of God to conceal a matter;",
+                "to search out a matter is the glory of kings.\" --Proverbs 25:2"
+            ],
+            fileDatabase: {
+                java: {
+                    title: "JAVA_CORE.DAT",
+                    meta: "Object-Oriented Programming // Enterprise Development",
+                    sections: [
+                        {
+                            label: "FILE OVERVIEW",
+                            title: "Data Synopsis",
+                            content: "Deep dive into Java programming. No surface-level tutorials. We're talking real OOP, design patterns, concurrency models, JVM internals. Build production-grade systems while understanding what actually happens under the hood."
+                        },
+                        {
+                            label: "KNOWLEDGE MODULES",
+                            title: "Indexed Topics",
+                            list: ["OOP Fundamentals & Design Patterns", "Collections Framework Deep Dive", "Multithreading & Concurrency Models", "JVM Architecture & Memory Management", "Spring Framework & Dependency Injection", "Database Integration & Transactions"]
+                        },
+                        {
+                            label: "ACCESS PACKAGES",
+                            title: "Subscription Tiers",
+                            packages: [
+                                {name: "FREE ACCESS", price: "K0", desc: "Core concepts • Video archives • Code samples"},
+                                {name: "FULL UNLOCK", price: "K80/mo", desc: "Complete archive • Projects • Direct mentor access • Certifications"}
+                            ]
+                        },
+                        {
+                            label: "CURATOR",
+                            title: "File Maintainer",
+                            content: "ISHMAEL D. TEMBO // 4th Year CS • Java Specialist • Obsessive code reviewer"
+                        }
+                    ]
+                },
+                "discrete-math": {
+                    title: "DISCRETE_MATH.DAT",
+                    meta: "Mathematical Foundations // Logic & Proofs",
+                    sections: [
+                        {
+                            label: "FILE OVERVIEW",
+                            title: "Data Synopsis",
+                            content: "The math they rushed through in lectures. We slow down and actually prove things. Build intuition for logic, sets, graphs, combinatorics. This is the foundation for everything in CS."
+                        },
+                        {
+                            label: "KNOWLEDGE MODULES",
+                            title: "Indexed Topics",
+                            list: ["Propositional & Predicate Logic", "Proof Techniques & Strategies", "Set Theory & Relations", "Graph Theory & Algorithms", "Combinatorics & Counting", "Number Theory Fundamentals"]
+                        },
+                        {
+                            label: "ACCESS PACKAGES",
+                            title: "Subscription Tiers",
+                            packages: [
+                                {name: "FREE ACCESS", price: "K0", desc: "Core concepts • Practice problems"},
+                                {name: "FULL UNLOCK", price: "K60/mo", desc: "Complete archive • Solutions • Proof walkthroughs"}
+                            ]
+                        },
+                        {
+                            label: "CURATOR",
+                            title: "File Maintainer",
+                            content: "ISHMAEL D. TEMBO // Mathematics Enthusiast"
+                        }
+                    ]
+                },
+                architecture: {
+                    title: "COMP_ARCH.DAT",
+                    meta: "Hardware Systems // Low-Level Design",
+                    sections: [
+                        {
+                            label: "FILE OVERVIEW",
+                            title: "Data Synopsis",
+                            content: "How computers actually work. From transistors to CPUs. Memory hierarchies, pipelining, caches. Understand the machine."
+                        },
+                        {
+                            label: "KNOWLEDGE MODULES",
+                            title: "Indexed Topics",
+                            list: ["CPU Architecture & Design", "Memory Hierarchy Systems", "Instruction Pipelining", "Cache Optimization", "Performance Analysis"]
+                        },
+                        {
+                            label: "ACCESS PACKAGES",
+                            title: "Subscription Tiers",
+                            packages: [{name: "COMING SOON", price: "TBA", desc: "Archive under construction"}]
+                        },
+                        {
+                            label: "CURATOR",
+                            title: "File Maintainer",
+                            content: "TBA // Seeking specialist"
+                        }
+                    ]
+                },
+                dbms: {
+                    title: "DATABASE_SYS.DAT",
+                    meta: "Data Management // SQL & NoSQL",
+                    sections: [
+                        {
+                            label: "FILE OVERVIEW",
+                            title: "Data Synopsis",
+                            content: "Database systems from first principles. SQL mastery, normalization theory, query optimization, transaction management. Build scalable data solutions."
+                        },
+                        {
+                            label: "KNOWLEDGE MODULES",
+                            title: "Indexed Topics",
+                            list: ["SQL Fundamentals & Advanced Queries", "Relational Database Design", "Normalization Theory", "Transaction Management", "Query Optimization", "NoSQL Patterns"]
+                        },
+                        {
+                            label: "ACCESS PACKAGES",
+                            title: "Subscription Tiers",
+                            packages: [{name: "COMING SOON", price: "TBA", desc: "Archive under construction"}]
+                        },
+                        {
+                            label: "CURATOR",
+                            title: "File Maintainer",
+                            content: "TBA // Seeking specialist"
+                        }
+                    ]
+                },
+                os: {
+                    title: "OPERATING_SYS.DAT",
+                    meta: "System Software // Kernel Architecture",
+                    sections: [
+                        {
+                            label: "FILE OVERVIEW",
+                            title: "Data Synopsis",
+                            content: "Operating systems internals. Process scheduling, memory management, file systems, concurrency primitives. Understand the layer between hardware and applications."
+                        },
+                        {
+                            label: "KNOWLEDGE MODULES",
+                            title: "Indexed Topics",
+                            list: ["Process & Thread Management", "Memory Management Systems", "File System Architecture", "Synchronization Primitives", "I/O Systems", "Kernel Design Patterns"]
+                        },
+                        {
+                            label: "ACCESS PACKAGES",
+                            title: "Subscription Tiers",
+                            packages: [{name: "COMING SOON", price: "TBA", desc: "Archive under construction"}]
+                        },
+                        {
+                            label: "CURATOR",
+                            title: "File Maintainer",
+                            content: "TBA // Seeking specialist"
+                        }
+                    ]
+                },
+                "digital-electronics": {
+                    title: "DIGITAL_ELEC.DAT",
+                    meta: "Circuit Design // Logic Systems",
+                    sections: [
+                        {
+                            label: "FILE OVERVIEW",
+                            title: "Data Synopsis",
+                            content: "Digital circuit design from gates to complex systems. Boolean algebra, sequential logic, state machines. The hardware foundation."
+                        },
+                        {
+                            label: "KNOWLEDGE MODULES",
+                            title: "Indexed Topics",
+                            list: ["Logic Gates & Boolean Algebra", "Combinational Circuits", "Sequential Logic Design", "State Machines", "Digital System Design"]
+                        },
+                        {
+                            label: "ACCESS PACKAGES",
+                            title: "Subscription Tiers",
+                            packages: [{name: "COMING SOON", price: "TBA", desc: "Archive under construction"}]
+                        },
+                        {
+                            label: "CURATOR",
+                            title: "File Maintainer",
+                            content: "TBA // Seeking specialist"
+                        }
+                    ]
+                },
+                algorithms: {
+                    title: "ALGORITHMS.DAT",
+                    meta: "Algorithm Design // Complexity Theory",
+                    sections: [
+                        {
+                            label: "FILE OVERVIEW",
+                            title: "Data Synopsis",
+                            content: "Algorithm design and analysis. Not just memorizing sorts. Understanding complexity classes, designing efficient solutions, proving correctness."
+                        },
+                        {
+                            label: "KNOWLEDGE MODULES",
+                            title: "Indexed Topics",
+                            list: ["Sorting & Searching Algorithms", "Graph Algorithms", "Dynamic Programming", "Greedy Algorithms", "Complexity Analysis", "NP-Completeness"]
+                        },
+                        {
+                            label: "ACCESS PACKAGES",
+                            title: "Subscription Tiers",
+                            packages: [{name: "COMING SOON", price: "TBA", desc: "Archive under construction"}]
+                        },
+                        {
+                            label: "CURATOR",
+                            title: "File Maintainer",
+                            content: "TBA // Seeking specialist"
+                        }
+                    ]
+                },
+                "data-comm": {
+                    title: "DATA_COMM.DAT",
+                    meta: "Network Protocols // Communication Systems",
+                    sections: [
+                        {
+                            label: "FILE OVERVIEW",
+                            title: "Data Synopsis",
+                            content: "Network protocols and data transmission. OSI model, TCP/IP stack, error detection, routing algorithms. How data moves across the internet."
+                        },
+                        {
+                            label: "KNOWLEDGE MODULES",
+                            title: "Indexed Topics",
+                            list: ["Network Protocol Stack", "OSI Model Deep Dive", "TCP/IP Implementation", "Error Detection & Correction", "Routing Algorithms"]
+                        },
+                        {
+                            label: "ACCESS PACKAGES",
+                            title: "Subscription Tiers",
+                            packages: [{name: "COMING SOON", price: "TBA", desc: "Archive under construction"}]
+                        },
+                        {
+                            label: "CURATOR",
+                            title: "File Maintainer",
+                            content: "TBA // Seeking specialist"
+                        }
+                    ]
+                },
+                "8085-assembly": {
+                    title: "8085_ASM.DAT",
+                    meta: "Assembly Language // Microprocessor Programming",
+                    sections: [
+                        {
+                            label: "FILE OVERVIEW",
+                            title: "Data Synopsis",
+                            content: "8085 microprocessor assembly programming. Low-level control, instruction sets, hardware interfacing. See how high-level code becomes machine instructions."
+                        },
+                        {
+                            label: "KNOWLEDGE MODULES",
+                            title: "Indexed Topics",
+                            list: ["8085 Architecture", "Instruction Set Mastery", "Assembly Programming", "Memory Addressing Modes", "Hardware Interfacing"]
+                        },
+                        {
+                            label: "ACCESS PACKAGES",
+                            title: "Subscription Tiers",
+                            packages: [{name: "COMING SOON", price: "TBA", desc: "Archive under construction"}]
+                        },
+                        {
+                            label: "CURATOR",
+                            title: "File Maintainer",
+                            content: "TBA // Seeking specialist"
+                        }
+                    ]
+                }
+            },
+            init() {
+                this.cacheElements();
+                this.setupEventListeners();
+                initDataStream();
+                initAccessPrompt();
+                setTimeout(() => this.startBootSequence(), 300);
+            },
+            cacheElements() {
+                this.elements.bootTerminal = document.getElementById('bootTerminal');
+                this.elements.transitionOverlay = document.getElementById('transitionOverlay');
+                this.elements.transitionLoading = document.getElementById('transitionLoading');
+                this.elements.loadingText = document.getElementById('loadingText');
+                this.elements.loadingProgress = document.getElementById('loadingProgress');
+                this.elements.introMessage = document.getElementById('introMessage');
+                this.elements.archiveContainer = document.getElementById('archiveContainer');
+                this.elements.contentArea = document.getElementById('contentArea');
+                this.elements.contentTitle = document.getElementById('contentTitle');
+                this.elements.contentMeta = document.getElementById('contentMeta');
+                this.elements.contentBody = document.getElementById('contentBody');
+            },
+            setupEventListeners() {
+                document.getElementById('fileList').addEventListener('click', (e) => {
+                    const fileItem = e.target.closest('.file-item');
+                    if (fileItem && !fileItem.classList.contains('locked')) {
+                        const topic = fileItem.dataset.topic;
+                        this.loadFile(topic);
+                    }
+                });
+            },
+            async startBootSequence() {
+                const lines = Array.from({length: 12}, (_, i) => document.getElementById(`line${i + 1}`));
+                lines[0].style.opacity = '1';
+                for (let i = 0; i < this.bootSequence.length; i++) {
+                    const line = lines[i + 1];
+                    const sequence = this.bootSequence[i];
+                    if (line) {
+                        line.style.opacity = '1';
+                        line.style.color = sequence.color;
+                        line.style.display = 'block';
+                        line.textContent = '';
+                        await this.typeText(line, sequence.text, 20);
+                        this.playTypingSound();
+                        await Utils.sleep(sequence.delay);
+                    }
+                }
+                setTimeout(() => Transitions.startTransition(), 800);
+            },
+            async typeText(element, text, speed) {
+                return new Promise(resolve => {
+                    let i = 0;
+                    const typingInterval = setInterval(() => {
+                        if (i < text.length) {
+                            element.textContent += text.charAt(i);
+                            i++;
+                        } else {
+                            clearInterval(typingInterval);
+                            resolve();
+                        }
+                    }, speed);
+                });
+            },
+            async eraseText(element, speed) {
+                return new Promise(resolve => {
+                    let text = element.textContent;
+                    let i = text.length;
+                    const erasingInterval = setInterval(() => {
+                        if (i > 0) {
+                            element.textContent = text.substring(0, i - 1);
+                            i--;
+                        } else {
+                            clearInterval(erasingInterval);
+                            resolve();
+                        }
+                    }, speed);
+                });
+            },
+            playTypingSound() {
+                if (window.AudioContext || window.webkitAudioContext) {
+                    try {
+                        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        const oscillator = audioContext.createOscillator();
+                        const gainNode = audioContext.createGain();
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        oscillator.frequency.value = 900 + Math.random() * 300;
+                        oscillator.type = 'sine';
+                        gainNode.gain.setValueAtTime(0.01, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.06);
+                        oscillator.start();
+                        oscillator.stop(audioContext.currentTime + 0.06);
+                    } catch (e) {}
+                }
+            },
+            loadFile(topic) {
+                const fileData = this.fileDatabase[topic];
+                if (!fileData) return;
+
+                this.elements.contentTitle.textContent = fileData.title;
+                this.elements.contentMeta.textContent = `// ${fileData.meta}`;
+                this.elements.contentBody.innerHTML = '';
+
+                // Highlight active file
+                document.querySelectorAll('.file-item').forEach(el => el.classList.remove('active-file'));
+                const activeItem = document.querySelector(`.file-item[data-topic="${topic}"]`);
+                if (activeItem) activeItem.classList.add('active-file');
+
+                this.elements.contentArea.classList.remove('glitch-in');
+                this.elements.contentArea.classList.add('active');
+                void this.elements.contentArea.offsetWidth;
+                this.elements.contentArea.classList.add('glitch-in');
+                this.elements.contentArea.style.opacity = 1;
+
+                // On mobile: auto-switch to content tab
+                if (window.innerWidth <= 768) {
+                    setTimeout(() => switchTab('content'), 100);
+                }
+
+                setTimeout(() => this.renderContent(fileData), 300);
+            },
+            async renderContent(fileData) {
+                for (const section of fileData.sections) {
+                    const block = document.createElement('div');
+                    block.className = 'data-block';
+                    block.setAttribute('data-label', section.label);
+
+                    const title = document.createElement('h3');
+                    title.textContent = section.title;
+                    block.appendChild(title);
+
+                    if (section.content) {
+                        const p = document.createElement('p');
+                        p.textContent = section.content;
+                        block.appendChild(p);
+                    }
+
+                    if (section.list) {
+                        const ul = document.createElement('ul');
+                        section.list.forEach(item => {
+                            const li = document.createElement('li');
+                            li.textContent = item;
+                            ul.appendChild(li);
+                        });
+                        block.appendChild(ul);
+                    }
+
+                    if (section.packages) {
+                        const grid = document.createElement('div');
+                        grid.className = 'package-grid';
+                        section.packages.forEach(pkg => {
+                            const pkgDiv = document.createElement('div');
+                            pkgDiv.className = 'package';
+                            pkgDiv.innerHTML = `
+                                <div class="package-name">${pkg.name}</div>
+                                <div class="package-price">${pkg.price}</div>
+                                <div class="package-desc">${pkg.desc}</div>
+                            `;
+                            grid.appendChild(pkgDiv);
+                        });
+                        block.appendChild(grid);
+                    }
+
+                    this.elements.contentBody.appendChild(block);
+                    await Utils.sleep(100);
+                }
+            }
+        };
+
+        const Transitions = {
+            elements: {},
+            async startTransition() {
+                this.init();
+                this.elements.transitionLoading.style.opacity = 1;
+                this.elements.transitionLoading.style.display = 'block';
+                await this.animateLoadingBar();
+                await this.terminalFade();
+                await this.showIntro();
+            },
+            init() {
+                Archive.cacheElements();
+                this.elements = Archive.elements;
+            },
+            async animateLoadingBar() {
+                return new Promise(resolve => {
+                    let progress = 0;
+                    const interval = setInterval(() => {
+                        progress += 1;
+                        const ease = Utils.easeOutQuad(progress / 100);
+                        this.elements.loadingProgress.style.width = `${ease * 100}%`;
+                        const phases = ["DECRYPTING ARCHIVE", "BYPASSING SECURITY", "LOADING KNOWLEDGE VAULT", "ACCESS GRANTED"];
+                        const phase = Math.floor(progress / 25);
+                        this.elements.loadingText.textContent = `${phases[Math.min(phase, 3)]} [${progress}%]`;
+                        if (progress >= 100) { 
+                            clearInterval(interval); 
+                            resolve(); 
+                        }
+                    }, 15);
+                });
+            },
+            async terminalFade() {
+                this.elements.bootTerminal.style.opacity = 0;
+                await Utils.sleep(500);
+                this.elements.bootTerminal.style.display = 'none';
+            },
+            async showIntro() {
+                this.elements.transitionLoading.style.opacity = 0;
+                await Utils.sleep(500);
+                this.elements.introMessage.style.opacity = 1;
+                
+                const lineElements = [];
+                for (const line of Archive.introLines) {
+                    const lineDiv = document.createElement('div');
+                    lineDiv.className = 'intro-line';
+                    lineDiv.style.opacity = 1;
+                    this.elements.introMessage.appendChild(lineDiv);
+                    await Archive.typeText(lineDiv, line, 30);
+                    lineElements.push(lineDiv);
+                    await Utils.sleep(400);
+                }
+                
+                await Utils.sleep(4000);
+                
+                for (let i = lineElements.length - 1; i >= 0; i--) {
+                    await Archive.eraseText(lineElements[i], 20);
+                    await Utils.sleep(200);
+                }
+                
+                this.elements.introMessage.style.opacity = 0;
+                await Utils.sleep(500);
+                this.elements.archiveContainer.style.opacity = 1;
+            }
+        };
+
+        const Utils = {
+            sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); },
+            easeOutQuad(t) { return t * (2 - t); }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => Archive.init());
+    </script>
+</body>
+</html>
