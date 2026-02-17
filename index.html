@@ -417,27 +417,13 @@
             animation: contentGlitch 0.8s ease-out forwards;
         }
         @keyframes contentGlitch {
-            0% { 
-                opacity: 0; 
-                transform: scale(0.9) translateX(-30px); 
-                filter: blur(3px);
-            }
-            15% { 
-                opacity: 1; 
-                transform: scale(1.02) translateX(5px); 
-                filter: blur(0);
-            }
-            30% { 
-                transform: scale(0.98) translateX(-2px); 
-            }
-            50% { 
-                transform: scale(1.01) translateX(1px); 
-            }
-            100% { 
-                opacity: 1; 
-                transform: scale(1) translateX(0); 
-                filter: blur(0);
-            }
+            0% {opacity: 0; transform: translate(0,0) skew(0deg); filter: blur(2px);}
+            2% {transform: translate(-2px,1px) skew(-5deg); filter: blur(0); opacity:1;}
+            4%   { transform: translate(2px, -1px) skew(-5deg); filter: blur(0); opacity: 1; }
+            6%   { transform: translate(-1px, 2px); }
+            8%   { transform: translate(1px, -2px); }
+            10%  { transform: translate(0); opacity: 1; }
+            100% { transform: translate(0); opacity: 1; filter: blur(0); }
         }
         .content-area::-webkit-scrollbar {
             width: 8px;
@@ -750,26 +736,54 @@
         updateTimestamp();
 
         // Data stream background
-        function initDataStream() {
-            const stream = document.getElementById('dataStream');
-            if (!stream) return;
-            let data = '';
-            const chars = '01';
-            for (let i = 0; i < 5000; i++) {
-                data += chars[Math.floor(Math.random() * chars.length)];
-                if (i % 80 === 79) data += '\n';
-            }
-            stream.textContent = data;
-            
-            setInterval(() => {
-                let newData = '';
-                for (let i = 0; i < 5000; i++) {
-                    newData += chars[Math.floor(Math.random() * chars.length)];
-                    if (i % 80 === 79) newData += '\n';
-                }
-                stream.textContent = newData;
-            }, 3000);
-        }
+       function initMatrixRain() {
+  const canvas = document.createElement('canvas');
+  canvas.id = 'matrixRain';
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  canvas.style.pointerEvents = 'none';
+  canvas.style.zIndex = '0';
+  canvas.style.opacity = '0.07';
+  document.body.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン'.split('');
+  const fontSize = 14;
+  const columns = canvas.width / fontSize;
+  const drops = Array(Math.floor(columns)).fill(1);
+
+  function draw() {
+    ctx.fillStyle = 'rgba(0,0,0,0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = '#0f0';
+    ctx.font = fontSize + 'px monospace';
+
+    drops.forEach((y, i) => {
+      const text = chars[Math.floor(Math.random() * chars.length)];
+      const x = i * fontSize;
+      ctx.fillText(text, x, y * fontSize);
+
+      if (y * fontSize > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    });
+  }
+
+  setInterval(draw, 35);
+
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+}
 
         // Access code system
         let accessBuffer = '';
@@ -1115,7 +1129,7 @@
             init() {
                 this.cacheElements();
                 this.setupEventListeners();
-                initDataStream();
+                initMatrixRain();
                 initAccessPrompt();
                 setTimeout(() => this.startBootSequence(), 300);
             },
@@ -1197,7 +1211,7 @@
                         oscillator.connect(gainNode);
                         gainNode.connect(audioContext.destination);
                         oscillator.frequency.value = 900 + Math.random() * 300;
-                        oscillator.type = 'sine';
+                        oscillator.type = 'square';
                         gainNode.gain.setValueAtTime(0.01, audioContext.currentTime);
                         gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.06);
                         oscillator.start();
